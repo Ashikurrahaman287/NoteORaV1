@@ -191,10 +191,20 @@ export default function LandingPage() {
             <img src="/noteora-logo.png" alt="Noteora" className="h-9 w-auto" />
           </div>
           <nav className="hidden md:flex items-center gap-8 text-sm">
-            <a href="#how-it-works" className="text-muted-foreground hover:text-foreground transition-colors">How it works</a>
-            <a href="#features" className="text-muted-foreground hover:text-foreground transition-colors">Features</a>
-            <a href="#pricing" className="text-muted-foreground hover:text-foreground transition-colors">Pricing</a>
-            <a href="#testimonials" className="text-muted-foreground hover:text-foreground transition-colors">Reviews</a>
+            {[
+              { label: "How it works", id: "how-it-works" },
+              { label: "Features", id: "features" },
+              { label: "Pricing", id: "pricing" },
+              { label: "Reviews", id: "testimonials" },
+            ].map(({ label, id }) => (
+              <button
+                key={id}
+                onClick={() => document.getElementById(id)?.scrollIntoView({ behavior: "smooth" })}
+                className="text-muted-foreground hover:text-foreground transition-colors cursor-pointer bg-transparent border-none p-0 text-sm"
+              >
+                {label}
+              </button>
+            ))}
           </nav>
           <div className="flex items-center gap-3">
             <Link href="/sign-in">
@@ -251,11 +261,12 @@ export default function LandingPage() {
                 Start for free <ArrowRight className="ml-2 h-4 w-4" />
               </Button>
             </Link>
-            <a href="#how-it-works">
-              <Button size="lg" variant="outline" className="h-12 px-8 text-base gap-2">
-                <Play className="h-4 w-4 fill-current" /> See how it works
-              </Button>
-            </a>
+            <button
+              onClick={() => document.getElementById("how-it-works")?.scrollIntoView({ behavior: "smooth" })}
+              className="inline-flex items-center gap-2 h-12 px-8 text-base rounded-lg border border-border bg-background hover:bg-muted transition-colors font-medium"
+            >
+              <Play className="h-4 w-4 fill-current" /> See how it works
+            </button>
           </motion.div>
 
           <motion.p {...heroAnim(0.22)} className="text-xs text-muted-foreground mt-4">
