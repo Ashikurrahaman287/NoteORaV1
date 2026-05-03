@@ -9,6 +9,8 @@ import { ErrorBoundary } from "./components/error-boundary";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { Skeleton } from "@/components/ui/skeleton";
+import { CommandPaletteProvider } from "./contexts/command-palette";
+import { CommandPalette } from "./components/CommandPalette";
 
 const LandingPage = lazy(() => import("./pages/landing"));
 const Dashboard = lazy(() => import("./pages/dashboard"));
@@ -196,39 +198,43 @@ function ClerkProviderWithRoutes() {
     >
       <QueryClientProvider client={queryClient}>
         <ClerkQueryClientCacheInvalidator />
-        <TooltipProvider>
-          <Switch>
-            <Route path="/" component={HomeRedirect} />
-            <Route path="/sign-in/*?" component={SignInPage} />
-            <Route path="/sign-up/*?" component={SignUpPage} />
-            {/* Public pages */}
-            <Route path="/how-it-works" component={() => <Suspense fallback={<PageLoader />}><HowItWorksPage /></Suspense>} />
-            <Route path="/about" component={() => <Suspense fallback={<PageLoader />}><AboutPage /></Suspense>} />
-            <Route path="/blog/:slug" component={() => <Suspense fallback={<PageLoader />}><BlogPostPage /></Suspense>} />
-            <Route path="/blog" component={() => <Suspense fallback={<PageLoader />}><BlogPage /></Suspense>} />
-            <Route path="/careers" component={() => <Suspense fallback={<PageLoader />}><CareersPage /></Suspense>} />
-            <Route path="/contact" component={() => <Suspense fallback={<PageLoader />}><ContactPage /></Suspense>} />
-            <Route path="/privacy" component={() => <Suspense fallback={<PageLoader />}><PrivacyPage /></Suspense>} />
-            <Route path="/terms" component={() => <Suspense fallback={<PageLoader />}><TermsPage /></Suspense>} />
-            <Route path="/security" component={() => <Suspense fallback={<PageLoader />}><SecurityPage /></Suspense>} />
-            <Route path="/cookies" component={() => <Suspense fallback={<PageLoader />}><CookiesPage /></Suspense>} />
-            <Route path="/changelog" component={() => <Suspense fallback={<PageLoader />}><ChangelogPage /></Suspense>} />
-            <Route path="/roadmap" component={() => <Suspense fallback={<PageLoader />}><RoadmapPage /></Suspense>} />
-            <Route path="/features" component={() => <Suspense fallback={<PageLoader />}><FeaturesPage /></Suspense>} />
-            <Route path="/pricing" component={() => <Suspense fallback={<PageLoader />}><PricingPage /></Suspense>} />
-            {/* Protected app pages */}
-            <Route path="/dashboard" component={() => <Protected component={Dashboard} />} />
-            <Route path="/projects/:id" component={() => <Protected component={ProjectDetail} />} />
-            <Route path="/projects" component={() => <Protected component={Projects} />} />
-            <Route path="/datasets" component={() => <Protected component={Datasets} />} />
-            <Route path="/analytics" component={() => <Protected component={Analytics} />} />
-            <Route path="/reports" component={() => <Protected component={Reports} />} />
-            <Route path="/notifications" component={() => <Protected component={Notifications} />} />
-            <Route path="/settings" component={() => <Protected component={Settings} />} />
-            <Route component={() => <Suspense fallback={<PageLoader />}><NotFound /></Suspense>} />
-          </Switch>
-        </TooltipProvider>
+        <CommandPaletteProvider>
+          <CommandPalette />
+          <TooltipProvider>
+            <Switch>
+              <Route path="/" component={HomeRedirect} />
+              <Route path="/sign-in/*?" component={SignInPage} />
+              <Route path="/sign-up/*?" component={SignUpPage} />
+              {/* Public pages */}
+              <Route path="/how-it-works" component={() => <Suspense fallback={<PageLoader />}><HowItWorksPage /></Suspense>} />
+              <Route path="/about" component={() => <Suspense fallback={<PageLoader />}><AboutPage /></Suspense>} />
+              <Route path="/blog/:slug" component={() => <Suspense fallback={<PageLoader />}><BlogPostPage /></Suspense>} />
+              <Route path="/blog" component={() => <Suspense fallback={<PageLoader />}><BlogPage /></Suspense>} />
+              <Route path="/careers" component={() => <Suspense fallback={<PageLoader />}><CareersPage /></Suspense>} />
+              <Route path="/contact" component={() => <Suspense fallback={<PageLoader />}><ContactPage /></Suspense>} />
+              <Route path="/privacy" component={() => <Suspense fallback={<PageLoader />}><PrivacyPage /></Suspense>} />
+              <Route path="/terms" component={() => <Suspense fallback={<PageLoader />}><TermsPage /></Suspense>} />
+              <Route path="/security" component={() => <Suspense fallback={<PageLoader />}><SecurityPage /></Suspense>} />
+              <Route path="/cookies" component={() => <Suspense fallback={<PageLoader />}><CookiesPage /></Suspense>} />
+              <Route path="/changelog" component={() => <Suspense fallback={<PageLoader />}><ChangelogPage /></Suspense>} />
+              <Route path="/roadmap" component={() => <Suspense fallback={<PageLoader />}><RoadmapPage /></Suspense>} />
+              <Route path="/features" component={() => <Suspense fallback={<PageLoader />}><FeaturesPage /></Suspense>} />
+              <Route path="/pricing" component={() => <Suspense fallback={<PageLoader />}><PricingPage /></Suspense>} />
+              {/* Protected app pages */}
+              <Route path="/dashboard" component={() => <Protected component={Dashboard} />} />
+              <Route path="/projects/:id" component={() => <Protected component={ProjectDetail} />} />
+              <Route path="/projects" component={() => <Protected component={Projects} />} />
+              <Route path="/datasets" component={() => <Protected component={Datasets} />} />
+              <Route path="/analytics" component={() => <Protected component={Analytics} />} />
+              <Route path="/reports" component={() => <Protected component={Reports} />} />
+              <Route path="/notifications" component={() => <Protected component={Notifications} />} />
+              <Route path="/settings" component={() => <Protected component={Settings} />} />
+              <Route component={() => <Suspense fallback={<PageLoader />}><NotFound /></Suspense>} />
+            </Switch>
+          </TooltipProvider>
+        </CommandPaletteProvider>
       </QueryClientProvider>
+
     </ClerkProvider>
   );
 }
