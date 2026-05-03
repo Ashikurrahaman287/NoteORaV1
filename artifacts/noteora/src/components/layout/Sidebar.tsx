@@ -1,12 +1,12 @@
 import { Link, useLocation } from "wouter";
 import { useUser, useClerk } from "@clerk/react";
-import { 
-  LayoutDashboard, 
-  FolderKanban, 
-  Database, 
-  BarChart3, 
-  FileText, 
-  Bell, 
+import {
+  LayoutDashboard,
+  FolderKanban,
+  Database,
+  BarChart3,
+  FileText,
+  Bell,
   Settings,
   LogOut,
   Menu,
@@ -33,29 +33,36 @@ function SidebarNav({ location }: { location: string }) {
 
   return (
     <div className="flex h-full flex-col bg-sidebar border-r border-sidebar-border">
-      <div className="p-4 flex items-center">
-        <img src="/noteora-logo.png" alt="Noteora" className="h-9 w-auto" />
+      {/* Logo */}
+      <div className="px-4 py-5 border-b border-sidebar-border/60">
+        <img src="/noteora-logo.png" alt="Noteora" className="h-8 w-auto" />
       </div>
 
-      <div className="flex-1 overflow-y-auto py-4 px-3 space-y-1">
-        <div className="text-xs font-semibold text-sidebar-foreground/50 uppercase tracking-wider mb-2 px-2">Menu</div>
+      {/* Nav */}
+      <div className="flex-1 overflow-y-auto py-4 px-3 space-y-0.5">
+        <p className="text-[10px] font-bold text-sidebar-foreground/40 uppercase tracking-widest mb-2 px-3">Menu</p>
         {navItems.map((item) => {
           const isActive = location === item.href || location.startsWith(item.href + "/");
           return (
             <Link key={item.href} href={item.href}>
               <div
                 data-testid={`nav-${item.label.toLowerCase()}`}
-                className={`flex items-center gap-3 px-3 py-2 rounded-md transition-colors cursor-pointer ${isActive ? "bg-sidebar-accent text-sidebar-accent-foreground font-medium" : "text-sidebar-foreground/70 hover:bg-sidebar-accent/50 hover:text-sidebar-foreground"}`}
+                className={`flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all cursor-pointer text-sm font-medium ${
+                  isActive
+                    ? "bg-sidebar-accent text-sidebar-accent-foreground shadow-sm"
+                    : "text-sidebar-foreground/60 hover:bg-sidebar-accent/60 hover:text-sidebar-foreground"
+                }`}
               >
-                <item.icon className="h-5 w-5" />
+                <item.icon className={`h-4.5 w-4.5 shrink-0 ${isActive ? "text-sidebar-accent-foreground" : "text-sidebar-foreground/50"}`} />
                 {item.label}
+                {isActive && <div className="ml-auto h-1.5 w-1.5 rounded-full bg-sidebar-primary" />}
               </div>
             </Link>
           );
         })}
 
-        <div className="mt-8 mb-2">
-          <div className="text-xs font-semibold text-sidebar-foreground/50 uppercase tracking-wider px-2">System</div>
+        <div className="pt-6 pb-1">
+          <p className="text-[10px] font-bold text-sidebar-foreground/40 uppercase tracking-widest mb-2 px-3">System</p>
         </div>
         {bottomNavItems.map((item) => {
           const isActive = location === item.href;
@@ -63,9 +70,13 @@ function SidebarNav({ location }: { location: string }) {
             <Link key={item.href} href={item.href}>
               <div
                 data-testid={`nav-${item.label.toLowerCase()}`}
-                className={`flex items-center gap-3 px-3 py-2 rounded-md transition-colors cursor-pointer ${isActive ? "bg-sidebar-accent text-sidebar-accent-foreground font-medium" : "text-sidebar-foreground/70 hover:bg-sidebar-accent/50 hover:text-sidebar-foreground"}`}
+                className={`flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all cursor-pointer text-sm font-medium ${
+                  isActive
+                    ? "bg-sidebar-accent text-sidebar-accent-foreground"
+                    : "text-sidebar-foreground/60 hover:bg-sidebar-accent/60 hover:text-sidebar-foreground"
+                }`}
               >
-                <item.icon className="h-5 w-5" />
+                <item.icon className={`h-4.5 w-4.5 shrink-0 ${isActive ? "text-sidebar-accent-foreground" : "text-sidebar-foreground/50"}`} />
                 {item.label}
               </div>
             </Link>
@@ -73,19 +84,20 @@ function SidebarNav({ location }: { location: string }) {
         })}
       </div>
 
-      <div className="p-4 border-t border-sidebar-border">
-        <div className="flex items-center gap-3 mb-4">
-          <div className="h-8 w-8 rounded-full bg-primary/20 flex items-center justify-center text-primary font-semibold text-sm">
+      {/* User */}
+      <div className="p-3 border-t border-sidebar-border/60">
+        <div className="flex items-center gap-3 px-2 py-2 rounded-lg mb-2">
+          <div className="h-8 w-8 rounded-full bg-sidebar-primary/20 flex items-center justify-center text-sidebar-primary font-bold text-sm shrink-0">
             {user?.firstName?.[0] ?? "U"}
           </div>
           <div className="flex-1 min-w-0">
-            <div className="text-sm font-medium truncate text-sidebar-foreground">{user?.fullName ?? "User"}</div>
-            <div className="text-xs text-sidebar-foreground/60 truncate">{user?.primaryEmailAddress?.emailAddress}</div>
+            <div className="text-xs font-semibold text-sidebar-foreground truncate">{user?.fullName ?? "User"}</div>
+            <div className="text-[10px] text-sidebar-foreground/50 truncate">{user?.primaryEmailAddress?.emailAddress}</div>
           </div>
         </div>
         <Button
-          variant="outline"
-          className="w-full justify-start text-muted-foreground"
+          variant="ghost"
+          className="w-full justify-start text-sidebar-foreground/50 hover:text-sidebar-foreground hover:bg-sidebar-accent/60 h-9 text-sm"
           data-testid="button-signout"
           onClick={() => signOut()}
         >
@@ -105,10 +117,10 @@ export function Sidebar() {
       <div className="hidden md:block w-64 shrink-0 h-[100dvh] sticky top-0">
         <SidebarNav location={location} />
       </div>
-      <div className="md:hidden flex items-center p-4 border-b bg-background sticky top-0 z-10">
+      <div className="md:hidden flex items-center px-4 py-3 border-b border-border bg-background sticky top-0 z-20">
         <Sheet>
           <SheetTrigger asChild>
-            <Button variant="ghost" size="icon" className="mr-2" data-testid="button-menu">
+            <Button variant="ghost" size="icon" className="mr-3" data-testid="button-menu">
               <Menu className="h-5 w-5" />
             </Button>
           </SheetTrigger>
@@ -116,7 +128,7 @@ export function Sidebar() {
             <SidebarNav location={location} />
           </SheetContent>
         </Sheet>
-        <img src="/noteora-logo.png" alt="Noteora" className="h-8 w-auto" />
+        <img src="/noteora-logo.png" alt="Noteora" className="h-7 w-auto" />
       </div>
     </>
   );

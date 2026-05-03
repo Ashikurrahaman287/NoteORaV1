@@ -31,8 +31,8 @@ artifacts/
       middlewares/ — clerkProxyMiddleware, requireAuth
   noteora/         — React+Vite frontend (port 23281, path /)
     src/
-      pages/       — dashboard, projects, datasets, analytics, reports, notifications, settings, landing
-      components/  — shared UI components
+      pages/       — dashboard, projects, datasets, analytics, reports, notifications, settings, landing, not-found
+      components/  — layout/Sidebar, layout/AppLayout, error-boundary, ui/*
 lib/
   api-spec/        — OpenAPI spec (openapi.yaml) + Orval config
   api-client-react/ — Generated React Query hooks
@@ -61,16 +61,48 @@ lib/
 ## Features
 
 - User authentication (Clerk) with email/password and Google SSO
-- Main dashboard with KPI cards, trend charts, activity feed, AI insights
+- Main dashboard with KPI cards + trend badges, area chart, AI insights, recent activity feed
 - Project management (create/edit/delete, status tracking)
-- Dataset management (CSV/Excel import, manual entry, data preview)
+- Dataset management (CSV/Excel/manual/API, data preview)
 - Analytics builder with multiple chart types (line, bar, pie, area, donut, KPI)
-- Report generation
-- Notification center
-- Dark/light mode
+- Report generation with date ranges and chart attachments
+- Notification center with mark-read functionality
+- User settings with dark/light mode toggle
+- Branded 404 page with navigation shortcuts
+
+## Landing Page Sections
+
+1. **Sticky frosted nav** — logo, How it works / Features / Pricing / Reviews links, Log in + Get Started CTA
+2. **Hero** — instant-animate (no whileInView), aurora gradient background, blue-to-cyan gradient headline, dashboard mockup
+3. **Stats bar** — 4 metrics with gradient numbers
+4. **How it works** — 3-step import → visualize → share flow
+5. **Features grid** — 6 feature cards with coloured icon backgrounds
+6. **Testimonials** — 3 cards with star ratings and avatars
+7. **Pricing** — 3 tiers, Pro highlighted with amber "Most Popular" badge
+8. **CTA section** — gradient aurora background, two buttons
+9. **Footer** — 4-column with logo, social icons, copyright, compliance badges
+
+## Branding
+
+- **Logo**: `/noteora-logo.png` in public dir — used in landing nav/footer/mockup, app sidebar (desktop+mobile), Clerk auth screens
+- **Favicon**: `/favicon.svg` — NoteOra blue-to-cyan gradient icon with stylized "N" and dot
+- **Primary color**: `hsl(220 85% 57%)` — brand blue
+- **Sidebar**: Dark navy (`hsl(222 60% 10%)`) in both light and dark mode — matches logo gradient
+
+## Security (API Server)
+
+- `helmet` with CSP (production only)
+- `express-rate-limit` — 300 req/15min global, 20 req/min on auth routes
+- CORS via `ALLOWED_ORIGINS` env var
+- Body limit 2MB
 
 ## Authentication
 
-Uses Replit-managed Clerk. The Clerk proxy runs at `/api/__clerk`. Sign-in/sign-up at `/sign-in` and `/sign-up`.
+Uses Replit-managed Clerk. The Clerk proxy runs at `/api/__clerk`. Sign-in/sign-up at `/sign-in` and `/sign-up`. Logo displayed in Clerk auth card via `logoImageUrl`.
+
+## SEO / Meta
+
+- `index.html` includes meta description, Open Graph tags, Twitter card, favicon link, apple-touch-icon
+- `theme-color` set to `#1e3a8a` (dark navy)
 
 See the `pnpm-workspace` skill for workspace structure, TypeScript setup, and package details.
