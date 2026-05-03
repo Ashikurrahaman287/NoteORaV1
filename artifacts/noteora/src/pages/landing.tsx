@@ -9,8 +9,25 @@ import {
   Sparkles, Globe, GitBranch, Menu, X, Play,
   ArrowUpRight, Award, Clock, Cpu, RefreshCw,
   Upload, Link2, Share2, Copy, Download, BarChart2,
-  PieChart, Activity, Table2, Check,
+  PieChart, Activity, Table2, Check, Sun, Moon,
 } from "lucide-react";
+import { useTheme } from "@/contexts/theme";
+
+function LandingThemeToggle() {
+  const { isDark, toggleTheme } = useTheme();
+  return (
+    <button
+      onClick={toggleTheme}
+      className="h-9 w-9 rounded-lg border border-border flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
+      aria-label="Toggle theme"
+    >
+      <div className="relative h-4 w-4">
+        <Sun className={`absolute inset-0 h-4 w-4 transition-all duration-300 ${isDark ? "opacity-0 rotate-90 scale-50" : "opacity-100"}`} />
+        <Moon className={`absolute inset-0 h-4 w-4 transition-all duration-300 ${isDark ? "opacity-100" : "opacity-0 -rotate-90 scale-50"}`} />
+      </div>
+    </button>
+  );
+}
 
 const heroAnim = (delay = 0) => ({
   initial: { opacity: 0, y: 20 },
@@ -677,7 +694,8 @@ export default function LandingPage() {
             ))}
           </nav>
 
-          <div className="hidden md:flex items-center gap-3">
+          <div className="hidden md:flex items-center gap-2">
+            <LandingThemeToggle />
             <Link href="/sign-in">
               <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-foreground">
                 Log in
@@ -691,6 +709,7 @@ export default function LandingPage() {
           </div>
 
           <div className="flex md:hidden items-center gap-2">
+            <LandingThemeToggle />
             <Link href="/sign-up" onClick={() => setMobileOpen(false)}>
               <Button size="sm" className="shadow-md shadow-primary/20">Get Started</Button>
             </Link>
