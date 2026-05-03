@@ -4,13 +4,33 @@ import { Button } from "@/components/ui/button";
 import { Link } from "wouter";
 import { Sparkles, Users, Globe, TrendingUp, Heart, Shield, Zap } from "lucide-react";
 
-const TEAM = [
-  { name: "Arjun Gupta", role: "CEO & Co-founder", bio: "Former VP of Engineering at Databricks. Built analytics systems at scale for over a decade.", avatar: "AG", color: "bg-blue-600" },
-  { name: "Tomás Rivera", role: "CTO & Co-founder", bio: "Ex-Google. Architected real-time data pipelines serving billions of events per day.", avatar: "TR", color: "bg-violet-600" },
-  { name: "Lena Fischer", role: "Chief Product Officer", bio: "Led product at Looker before its acquisition by Google. Obsessed with making data accessible to everyone.", avatar: "LF", color: "bg-emerald-600" },
-  { name: "Kwame Asante", role: "Head of Engineering", bio: "Previously Staff Engineer at Stripe. Loves distributed systems and well-typed code.", avatar: "KA", color: "bg-amber-600" },
-  { name: "Priya Mehta", role: "Head of Design", bio: "Designed interfaces for over 50 SaaS products. Believes great data tools should feel effortless.", avatar: "PM", color: "bg-rose-600" },
-  { name: "Daniel Park", role: "VP of Sales", bio: "Grew ARR from $0 to $20M at two previous startups. Loves helping teams unlock the value in their data.", avatar: "DP", color: "bg-sky-600" },
+const TEAM_GROUPS = [
+  {
+    group: "Leadership",
+    members: [
+      { name: "AGT Venture", role: "Founder", avatar: "AV", color: "bg-slate-700" },
+      { name: "Ashikur Rahaman", role: "CEO", avatar: "AR", color: "bg-blue-600" },
+      { name: "Rockey Hassan", role: "Chief of Staff", avatar: "RH", color: "bg-indigo-600" },
+    ],
+  },
+  {
+    group: "Operating Leads",
+    members: [
+      { name: "Afnan Turjo", role: "Head of Growth Engine", avatar: "AT", color: "bg-violet-600" },
+      { name: "LI Zhou", role: "Head of Liquidity & Exchange Partnerships", avatar: "LZ", color: "bg-cyan-600" },
+      { name: "Labib Rahman", role: "Head of Liquidity & Exchange Partnerships", avatar: "LR", color: "bg-emerald-600" },
+      { name: "Jannatul Fardusi", role: "Customer Success & Launch Ops", avatar: "JF", color: "bg-teal-600" },
+    ],
+  },
+  {
+    group: "Build & Delivery",
+    members: [
+      { name: "Afroza Fahim", role: "Design & Content Lead", avatar: "AF", color: "bg-rose-600" },
+      { name: "Sharif Rahman", role: "Full Stack Developer", avatar: "SR", color: "bg-amber-600" },
+      { name: "Faye Wong", role: "Data & Automation Engineer", avatar: "FW", color: "bg-sky-600" },
+      { name: "Saiful Islam", role: "Social Media Manager", avatar: "SI", color: "bg-pink-600" },
+    ],
+  },
 ];
 
 const VALUES = [
@@ -139,16 +159,28 @@ export default function AboutPage() {
       <section className="py-20 px-6 bg-muted/20">
         <div className="max-w-5xl mx-auto">
           <p className="text-sm font-bold text-primary uppercase tracking-widest mb-3 text-center">The people</p>
-          <h2 className="text-3xl md:text-4xl font-extrabold mb-10 text-center">Meet the team</h2>
-          <div className="grid md:grid-cols-3 gap-6">
-            {TEAM.map((m) => (
-              <div key={m.name} className="rounded-2xl border border-border p-6 hover:shadow-sm transition-shadow">
-                <div className={`h-14 w-14 rounded-2xl ${m.color} flex items-center justify-center text-white font-bold text-lg mb-4`}>
-                  {m.avatar}
+          <h2 className="text-3xl md:text-4xl font-extrabold mb-12 text-center">Meet the team</h2>
+
+          <div className="space-y-12">
+            {TEAM_GROUPS.map((group) => (
+              <div key={group.group}>
+                <div className="flex items-center gap-3 mb-6">
+                  <span className="text-xs font-bold uppercase tracking-widest text-muted-foreground">{group.group}</span>
+                  <div className="flex-1 h-px bg-border" />
                 </div>
-                <h3 className="font-bold text-base">{m.name}</h3>
-                <p className="text-xs text-primary font-medium mb-3">{m.role}</p>
-                <p className="text-sm text-muted-foreground leading-relaxed">{m.bio}</p>
+                <div className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                  {group.members.map((m) => (
+                    <div key={m.name} className="rounded-2xl border border-border p-5 hover:shadow-sm hover:border-primary/30 transition-all flex flex-col items-start gap-3">
+                      <div className={`h-12 w-12 rounded-xl ${m.color} flex items-center justify-center text-white font-bold text-sm shrink-0`}>
+                        {m.avatar}
+                      </div>
+                      <div>
+                        <h3 className="font-bold text-sm leading-snug">{m.name}</h3>
+                        <p className="text-xs text-primary font-medium mt-0.5 leading-snug">{m.role}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
               </div>
             ))}
           </div>
