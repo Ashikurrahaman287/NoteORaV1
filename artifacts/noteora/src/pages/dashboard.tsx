@@ -1,10 +1,12 @@
 import { useGetDashboardSummary, getGetDashboardSummaryQueryKey, useGetTrends, getGetTrendsQueryKey, useGetRecentActivity, getGetRecentActivityQueryKey, useGetInsights, getGetInsightsQueryKey } from "@workspace/api-client-react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { FolderKanban, Database, BarChart3, FileText, Activity, TrendingUp, TrendingDown, Sparkles, Clock } from "lucide-react";
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Area, AreaChart, BarChart, Bar } from 'recharts';
+import { FolderKanban, Database, BarChart3, FileText, Activity, TrendingUp, TrendingDown, Sparkles, Clock, CheckCircle, AlertTriangle, Info, Zap, Share2, RefreshCw, Bell, Users } from "lucide-react";
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Area, AreaChart } from 'recharts';
 import { Skeleton } from "@/components/ui/skeleton";
 import { useUser } from "@clerk/react";
 import { Badge } from "@/components/ui/badge";
+import { motion, AnimatePresence } from "framer-motion";
+import { useState, useEffect, useRef } from "react";
 
 function timeAgo(date: string) {
   const diff = Date.now() - new Date(date).getTime();
@@ -24,12 +26,149 @@ function getGreeting() {
 }
 
 const KPI_META = [
-  { label: "Projects", icon: FolderKanban, key: "totalProjects" as const, trend: +12, color: "text-blue-500", bg: "bg-blue-500/10" },
-  { label: "Datasets", icon: Database, key: "totalDatasets" as const, trend: +8, color: "text-violet-500", bg: "bg-violet-500/10" },
-  { label: "Charts", icon: BarChart3, key: "totalCharts" as const, trend: +23, color: "text-cyan-500", bg: "bg-cyan-500/10" },
-  { label: "Reports", icon: FileText, key: "totalReports" as const, trend: +5, color: "text-emerald-500", bg: "bg-emerald-500/10" },
-  { label: "Total Rows", icon: Activity, key: "totalRows" as const, trend: +18, color: "text-amber-500", bg: "bg-amber-500/10" },
+  { label: "Projects",   icon: FolderKanban, key: "totalProjects"  as const, trend: +12, color: "text-blue-500",    bg: "bg-blue-500/10"    },
+  { label: "Datasets",   icon: Database,     key: "totalDatasets"  as const, trend: +8,  color: "text-violet-500", bg: "bg-violet-500/10"  },
+  { label: "Charts",     icon: BarChart3,    key: "totalCharts"    as const, trend: +23, color: "text-cyan-500",   bg: "bg-cyan-500/10"    },
+  { label: "Reports",    icon: FileText,     key: "totalReports"   as const, trend: +5,  color: "text-emerald-500",bg: "bg-emerald-500/10" },
+  { label: "Total Rows", icon: Activity,     key: "totalRows"      as const, trend: +18, color: "text-amber-500",  bg: "bg-amber-500/10"   },
 ];
+
+// ─── Live Feed ───────────────────────────────────────────────────────────────
+
+type FeedEventType = "success" | "info" | "warning" | "ai";
+
+interface FeedEvent {
+  id: number;
+  type: FeedEventType;
+  icon: React.ElementType;
+  title: string;
+  detail: string;
+  ts: Date;
+}
+
+const EVENT_POOL: Omit<FeedEvent, "id" | "ts">[] = [
+  { type: "success", icon: CheckCircle,  title: "Dataset sync complete",      detail: "Q4_Revenue.csv · 1,247 rows imported" },
+  { type: "ai",      icon: Sparkles,     title: "AI insight generated",       detail: "MRR up 18.3% compared to last month" },
+  { type: "info",    icon: BarChart3,    title: "Chart added to dashboard",   detail: "Revenue Trend · pinned by you" },
+  { type: "success", icon: Share2,       title: "Report delivered",           detail: "Q4 Summary → 4 recipients via email" },
+  { type: "warning", icon: AlertTriangle,title: "Threshold alert triggered",  detail: "Churn rate exceeded 6% — check segments" },
+  { type: "info",    icon: RefreshCw,    title: "Salesforce sync running",    detail: "API connector · ~30s remaining" },
+  { type: "success", icon: CheckCircle,  title: "New project created",        detail: "\"APAC Growth Q1\" · 3 datasets linked" },
+  { type: "ai",      icon: Zap,          title: "Anomaly detected",           detail: "Spike in EMEA conversions — +47% on Friday" },
+  { type: "info",    icon: Users,        title: "Team member joined",         detail: "Riya Shah accepted your workspace invite" },
+  { type: "success", icon: FileText,     title: "Report generated",           detail: "Monthly KPI Digest · PDF ready to share" },
+  { type: "info",    icon: Database,     title: "Dataset updated",            detail: "marketing_data.xlsx · 890 rows refreshed" },
+  { type: "ai",      icon: Sparkles,     title: "Forecast updated",           detail: "Q1 2026 MRR projected at $3.1M (+29%)" },
+  { type: "warning", icon: Bell,         title: "Scheduled report delayed",   detail: "Weekly digest missed window — retrying" },
+  { type: "success", icon: CheckCircle,  title: "Chart exported",             detail: "Revenue_by_Region.png · 2048 × 1024" },
+  { type: "info",    icon: Info,         title: "API rate limit at 80%",      detail: "Salesforce connector · consider upgrading" },
+];
+
+const TYPE_STYLES: Record<FeedEventType, { dot: string; badge: string; badgeText: string; iconColor: string; bg: string }> = {
+  success: { dot: "bg-emerald-500", badge: "bg-emerald-500/10 text-emerald-600 border-emerald-500/20", badgeText: "success",  iconColor: "text-emerald-500", bg: "bg-emerald-500/8" },
+  info:    { dot: "bg-blue-500",    badge: "bg-blue-500/10 text-blue-600 border-blue-500/20",          badgeText: "info",     iconColor: "text-blue-500",    bg: "bg-blue-500/8"    },
+  warning: { dot: "bg-amber-500",   badge: "bg-amber-500/10 text-amber-600 border-amber-500/20",       badgeText: "alert",    iconColor: "text-amber-500",   bg: "bg-amber-500/8"   },
+  ai:      { dot: "bg-violet-500",  badge: "bg-violet-500/10 text-violet-600 border-violet-500/20",    badgeText: "ai",       iconColor: "text-violet-500",  bg: "bg-violet-500/8"  },
+};
+
+function useLiveFeed() {
+  const idRef = useRef(0);
+  const poolRef = useRef([...EVENT_POOL].sort(() => Math.random() - 0.5));
+
+  const makeEvent = (): FeedEvent => {
+    if (poolRef.current.length === 0) poolRef.current = [...EVENT_POOL].sort(() => Math.random() - 0.5);
+    const template = poolRef.current.pop()!;
+    return { ...template, id: ++idRef.current, ts: new Date() };
+  };
+
+  const [events, setEvents] = useState<FeedEvent[]>(() =>
+    Array.from({ length: 4 }, () => {
+      const e = makeEvent();
+      e.ts = new Date(Date.now() - Math.random() * 5 * 60000);
+      return e;
+    })
+  );
+
+  useEffect(() => {
+    const schedule = () => {
+      const delay = 4000 + Math.random() * 5000;
+      return setTimeout(() => {
+        setEvents(prev => [makeEvent(), ...prev].slice(0, 12));
+        timerRef.current = schedule();
+      }, delay);
+    };
+    const timerRef = { current: schedule() };
+    return () => clearTimeout(timerRef.current);
+  }, []);
+
+  return events;
+}
+
+function LiveFeedPanel() {
+  const events = useLiveFeed();
+  const [pulse, setPulse] = useState(true);
+
+  useEffect(() => {
+    const iv = setInterval(() => setPulse(p => !p), 1200);
+    return () => clearInterval(iv);
+  }, []);
+
+  return (
+    <Card className="flex flex-col h-full">
+      <CardHeader className="pb-3">
+        <div className="flex items-center justify-between">
+          <CardTitle className="text-base font-semibold flex items-center gap-2">
+            <Activity className="h-4 w-4 text-muted-foreground" />
+            Live Activity Feed
+          </CardTitle>
+          <div className="flex items-center gap-1.5 text-[11px] font-bold text-emerald-600">
+            <span className={`h-2 w-2 rounded-full bg-emerald-500 transition-opacity duration-500 ${pulse ? "opacity-100" : "opacity-30"}`} />
+            LIVE
+          </div>
+        </div>
+        <CardDescription>Real-time events across your workspace</CardDescription>
+      </CardHeader>
+      <CardContent className="flex-1 overflow-hidden pr-2">
+        <div className="space-y-1 overflow-y-auto max-h-[420px] pr-1 scrollbar-thin">
+          <AnimatePresence initial={false}>
+            {events.map((ev) => {
+              const s = TYPE_STYLES[ev.type];
+              const Icon = ev.icon;
+              return (
+                <motion.div
+                  key={ev.id}
+                  initial={{ opacity: 0, y: -12, scale: 0.97 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  exit={{ opacity: 0, height: 0, marginBottom: 0 }}
+                  transition={{ duration: 0.28 }}
+                  className={`flex items-start gap-3 rounded-xl px-3 py-2.5 border border-transparent hover:bg-muted/40 transition-colors group ${ev.id === events[0]?.id ? s.bg + " border-border/60" : ""}`}
+                >
+                  <div className={`h-7 w-7 rounded-lg flex items-center justify-center shrink-0 mt-0.5 ${s.bg} border border-border/50`}>
+                    <Icon className={`h-3.5 w-3.5 ${s.iconColor}`} />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2 mb-0.5">
+                      <span className="text-xs font-semibold leading-snug truncate">{ev.title}</span>
+                      <span className={`hidden group-hover:inline-flex text-[9px] font-bold px-1.5 py-0.5 rounded border ${s.badge} shrink-0`}>
+                        {s.badgeText}
+                      </span>
+                    </div>
+                    <p className="text-[11px] text-muted-foreground leading-snug truncate">{ev.detail}</p>
+                  </div>
+                  <span className="text-[10px] text-muted-foreground/60 shrink-0 mt-0.5 tabular-nums">
+                    {ev.ts.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
+                  </span>
+                </motion.div>
+              );
+            })}
+          </AnimatePresence>
+        </div>
+      </CardContent>
+    </Card>
+  );
+}
+
+// ─── Dashboard ────────────────────────────────────────────────────────────────
 
 export default function Dashboard() {
   const { user } = useUser();
@@ -88,9 +227,8 @@ export default function Dashboard() {
         })}
       </div>
 
-      {/* Charts + Insights */}
+      {/* Area Chart + AI Insights */}
       <div className="grid gap-6 lg:grid-cols-7">
-        {/* Area chart */}
         <Card className="lg:col-span-4">
           <CardHeader>
             <CardTitle className="text-base font-semibold">Growth Trends</CardTitle>
@@ -141,7 +279,7 @@ export default function Dashboard() {
             </CardTitle>
             <CardDescription>Automated analysis of your data</CardDescription>
           </CardHeader>
-          <CardContent className="flex-1 space-y-3">
+          <CardContent className="flex-1 space-y-2.5">
             {isLoadingInsights
               ? Array.from({ length: 3 }).map((_, i) => <Skeleton key={i} className="h-16 w-full" />)
               : insights?.length === 0
@@ -174,40 +312,48 @@ export default function Dashboard() {
         </Card>
       </div>
 
-      {/* Recent Activity */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-base font-semibold flex items-center gap-2">
-            <Activity className="h-4 w-4 text-muted-foreground" /> Recent Activity
-          </CardTitle>
-          <CardDescription>Latest actions across your workspace</CardDescription>
-        </CardHeader>
-        <CardContent>
-          {isLoadingActivity ? (
-            <div className="space-y-3">
-              {Array.from({ length: 5 }).map((_, i) => <Skeleton key={i} className="h-12 w-full" />)}
-            </div>
-          ) : !activity?.length ? (
-            <div className="py-8 text-center text-muted-foreground">
-              <Activity className="h-8 w-8 mx-auto mb-2 opacity-40" />
-              <p className="text-sm">No activity yet — start by creating a project or dataset.</p>
-            </div>
-          ) : (
-            <div className="space-y-1">
-              {activity.slice(0, 8).map((item, i) => (
-                <div key={i} className="flex items-center gap-3 py-2.5 px-3 rounded-lg hover:bg-muted/40 transition-colors">
-                  <div className="h-2 w-2 rounded-full bg-primary shrink-0" />
-                  <div className="flex-1 min-w-0">
-                    <span className="text-sm font-medium">{item.action}</span>
-                  </div>
-                  <span className="text-xs text-muted-foreground shrink-0">{timeAgo(item.createdAt)}</span>
-                </div>
-              ))}
-            </div>
-          )}
-        </CardContent>
-      </Card>
+      {/* Bottom: API Recent Activity + Live Feed */}
+      <div className="grid gap-6 lg:grid-cols-2">
 
+        {/* Recent Activity (API-backed) */}
+        <Card>
+          <CardHeader className="pb-3">
+            <CardTitle className="text-base font-semibold flex items-center gap-2">
+              <Clock className="h-4 w-4 text-muted-foreground" />
+              Recent Activity
+            </CardTitle>
+            <CardDescription>Latest workspace actions</CardDescription>
+          </CardHeader>
+          <CardContent>
+            {isLoadingActivity ? (
+              <div className="space-y-3">
+                {Array.from({ length: 5 }).map((_, i) => <Skeleton key={i} className="h-10 w-full" />)}
+              </div>
+            ) : !activity?.length ? (
+              <div className="py-10 text-center text-muted-foreground">
+                <Activity className="h-8 w-8 mx-auto mb-2 opacity-40" />
+                <p className="text-sm">No activity yet — create a project or dataset to get started.</p>
+              </div>
+            ) : (
+              <div className="space-y-0.5">
+                {activity.slice(0, 10).map((item, i) => (
+                  <div key={i} className="flex items-center gap-3 py-2.5 px-3 rounded-xl hover:bg-muted/40 transition-colors group">
+                    <div className="h-1.5 w-1.5 rounded-full bg-primary/50 shrink-0 group-hover:bg-primary transition-colors" />
+                    <div className="flex-1 min-w-0">
+                      <span className="text-sm">{item.action}</span>
+                    </div>
+                    <span className="text-[11px] text-muted-foreground shrink-0 tabular-nums">{timeAgo(item.createdAt)}</span>
+                  </div>
+                ))}
+              </div>
+            )}
+          </CardContent>
+        </Card>
+
+        {/* Live Feed */}
+        <LiveFeedPanel />
+
+      </div>
     </div>
   );
 }
