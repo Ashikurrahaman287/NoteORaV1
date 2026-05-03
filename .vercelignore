@@ -1,0 +1,65 @@
+# Dependencies and lock files managed by pnpm
+node_modules
+.pnpm-store
+pnpm-lock.yaml
+
+# Development files
+.local
+.replit
+.replitignore
+replit.md
+.agents
+
+# Git
+.git
+.gitignore
+
+# IDE and editor files
+.vscode
+.idea
+*.swp
+*.swo
+*.sublime-project
+*.sublime-workspace
+
+# Build outputs from other packages
+artifacts/api-server/dist
+artifacts/mockup-sandbox/dist
+artifacts/noteora/dist
+
+# Source files (TypeScript) - we only need dist
+**/*.ts
+**/*.tsx
+tsconfig.json
+tsconfig.base.json
+**/*.test.ts
+**/*.test.tsx
+**/*.spec.ts
+**/*.spec.tsx
+
+# Docs and other non-essential
+*.md
+LICENSE
+CHANGELOG.md
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+logs
+
+# Temporary files
+tmp
+temp
+.cache
+dist-old
+
+# Monorepo specific
+.npmrc
+pnpm-workspace.yaml
+
+# Don't ignore these
+!.npmrc
+!
