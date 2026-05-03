@@ -187,9 +187,9 @@ export default function LandingPage() {
       {/* ── Nav ── */}
       <header className="fixed top-0 w-full z-50 border-b border-border/50 bg-background/85 backdrop-blur-xl">
         <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <img src="/noteora-logo.png" alt="Noteora" className="h-9 w-auto" />
-          </div>
+          <Link href="/">
+            <span className="text-lg font-extrabold tracking-tight cursor-pointer hover:text-primary transition-colors">Noteora</span>
+          </Link>
           <nav className="hidden md:flex items-center gap-8 text-sm">
             <Link href="/how-it-works">
               <span className="text-muted-foreground hover:text-foreground transition-colors cursor-pointer">How it works</span>

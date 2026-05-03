@@ -46,7 +46,7 @@ export function PublicLayout({ children }: { children: React.ReactNode }) {
       <header className="fixed top-0 w-full z-50 border-b border-border/50 bg-background/85 backdrop-blur-xl">
         <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
           <Link href="/">
-            <img src="/noteora-logo.png" alt="Noteora" className="h-9 w-auto cursor-pointer" />
+            <span className="text-lg font-extrabold tracking-tight cursor-pointer hover:text-primary transition-colors">Noteora</span>
           </Link>
           <nav className="hidden md:flex items-center gap-8 text-sm">
             {NAV_LINKS.map((l) => (
