@@ -3,20 +3,31 @@ info:
   # Do not change the title, if the title changes, the import paths will be broken
   title: Api
   version: 0.1.0
-  description: API specification
+  description: Noteora Smart Data Analytics API
 servers:
   - url: /api
     description: Base API path
 tags:
   - name: health
     description: Health operations
+  - name: projects
+    description: Project management
+  - name: datasets
+    description: Dataset management
+  - name: charts
+    description: Chart management
+  - name: reports
+    description: Report management
+  - name: notifications
+    description: Notification management
+  - name: analytics
+    description: Analytics and aggregations
 paths:
   /healthz:
     get:
       operationId: healthCheck
       tags: [health]
       summary: Health check
-      description: Returns server health status
       responses:
         "200":
           description: Healthy
@@ -24,6 +35,497 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/HealthStatus"
+
+  /projects:
+    get:
+      operationId: listProjects
+      tags: [projects]
+      summary: List all projects for authenticated user
+      responses:
+        "200":
+          description: List of projects
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Project"
+    post:
+      operationId: createProject
+      tags: [projects]
+      summary: Create a new project
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateProjectBody"
+      responses:
+        "201":
+          description: Created project
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Project"
+
+  /projects/{id}:
+    get:
+      operationId: getProject
+      tags: [projects]
+      summary: Get a project by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Project
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Project"
+    put:
+      operationId: updateProject
+      tags: [projects]
+      summary: Update a project
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateProjectBody"
+      responses:
+        "200":
+          description: Updated project
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Project"
+    delete:
+      operationId: deleteProject
+      tags: [projects]
+      summary: Delete a project
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Deleted
+
+  /projects/{id}/datasets:
+    get:
+      operationId: listProjectDatasets
+      tags: [datasets]
+      summary: List datasets for a project
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: List of datasets
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Dataset"
+
+  /datasets:
+    get:
+      operationId: listDatasets
+      tags: [datasets]
+      summary: List all datasets for authenticated user
+      responses:
+        "200":
+          description: List of datasets
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Dataset"
+    post:
+      operationId: createDataset
+      tags: [datasets]
+      summary: Create a dataset (manual entry or CSV upload metadata)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateDatasetBody"
+      responses:
+        "201":
+          description: Created dataset
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Dataset"
+
+  /datasets/{id}:
+    get:
+      operationId: getDataset
+      tags: [datasets]
+      summary: Get a dataset by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Dataset
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Dataset"
+    delete:
+      operationId: deleteDataset
+      tags: [datasets]
+      summary: Delete a dataset
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Deleted
+
+  /datasets/{id}/rows:
+    get:
+      operationId: getDatasetRows
+      tags: [datasets]
+      summary: Get rows for a dataset (paginated)
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 1
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 50
+      responses:
+        "200":
+          description: Dataset rows
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DatasetRowsResponse"
+    post:
+      operationId: addDatasetRows
+      tags: [datasets]
+      summary: Add rows to a dataset
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AddDatasetRowsBody"
+      responses:
+        "201":
+          description: Rows added
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  inserted:
+                    type: integer
+                required:
+                  - inserted
+
+  /charts:
+    get:
+      operationId: listCharts
+      tags: [charts]
+      summary: List all charts for authenticated user
+      responses:
+        "200":
+          description: List of charts
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Chart"
+    post:
+      operationId: createChart
+      tags: [charts]
+      summary: Create a chart
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateChartBody"
+      responses:
+        "201":
+          description: Created chart
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Chart"
+
+  /charts/{id}:
+    get:
+      operationId: getChart
+      tags: [charts]
+      summary: Get a chart by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Chart
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Chart"
+    put:
+      operationId: updateChart
+      tags: [charts]
+      summary: Update a chart
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateChartBody"
+      responses:
+        "200":
+          description: Updated chart
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Chart"
+    delete:
+      operationId: deleteChart
+      tags: [charts]
+      summary: Delete a chart
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Deleted
+
+  /reports:
+    get:
+      operationId: listReports
+      tags: [reports]
+      summary: List all reports
+      responses:
+        "200":
+          description: List of reports
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Report"
+    post:
+      operationId: createReport
+      tags: [reports]
+      summary: Create a report
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateReportBody"
+      responses:
+        "201":
+          description: Created report
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Report"
+
+  /reports/{id}:
+    get:
+      operationId: getReport
+      tags: [reports]
+      summary: Get a report by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Report
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Report"
+    delete:
+      operationId: deleteReport
+      tags: [reports]
+      summary: Delete a report
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Deleted
+
+  /notifications:
+    get:
+      operationId: listNotifications
+      tags: [notifications]
+      summary: List notifications for authenticated user
+      responses:
+        "200":
+          description: List of notifications
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Notification"
+
+  /notifications/{id}/read:
+    post:
+      operationId: markNotificationRead
+      tags: [notifications]
+      summary: Mark a notification as read
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Updated notification
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Notification"
+
+  /notifications/read-all:
+    post:
+      operationId: markAllNotificationsRead
+      tags: [notifications]
+      summary: Mark all notifications as read
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  updated:
+                    type: integer
+                required:
+                  - updated
+
+  /analytics/dashboard:
+    get:
+      operationId: getDashboardSummary
+      tags: [analytics]
+      summary: Get dashboard summary stats
+      responses:
+        "200":
+          description: Dashboard summary
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DashboardSummary"
+
+  /analytics/insights:
+    get:
+      operationId: getInsights
+      tags: [analytics]
+      summary: Get AI-generated insights for user's data
+      responses:
+        "200":
+          description: Insights list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Insight"
+
+  /analytics/activity:
+    get:
+      operationId: getRecentActivity
+      tags: [analytics]
+      summary: Get recent activity feed
+      responses:
+        "200":
+          description: Recent activity
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ActivityItem"
+
+  /analytics/trends:
+    get:
+      operationId: getTrends
+      tags: [analytics]
+      summary: Get monthly trend data for charts
+      responses:
+        "200":
+          description: Trend data
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/TrendPoint"
+
 components:
   schemas:
     HealthStatus:
@@ -34,3 +536,426 @@ components:
       required:
         - status
 
+    Project:
+      type: object
+      properties:
+        id:
+          type: integer
+        userId:
+          type: string
+        name:
+          type: string
+        description:
+          type: string
+          nullable: true
+        status:
+          type: string
+          enum: [active, draft, archived]
+        datasetCount:
+          type: integer
+        chartCount:
+          type: integer
+        createdAt:
+          type: string
+        updatedAt:
+          type: string
+      required:
+        - id
+        - userId
+        - name
+        - status
+        - datasetCount
+        - chartCount
+        - createdAt
+        - updatedAt
+
+    CreateProjectBody:
+      type: object
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+          nullable: true
+        status:
+          type: string
+          enum: [active, draft, archived]
+          default: active
+      required:
+        - name
+
+    UpdateProjectBody:
+      type: object
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+          nullable: true
+        status:
+          type: string
+          enum: [active, draft, archived]
+
+    Dataset:
+      type: object
+      properties:
+        id:
+          type: integer
+        projectId:
+          type: integer
+        userId:
+          type: string
+        name:
+          type: string
+        sourceType:
+          type: string
+          enum: [csv, excel, manual, api]
+        columns:
+          type: array
+          items:
+            type: string
+        rowCount:
+          type: integer
+        createdAt:
+          type: string
+        updatedAt:
+          type: string
+      required:
+        - id
+        - projectId
+        - userId
+        - name
+        - sourceType
+        - columns
+        - rowCount
+        - createdAt
+        - updatedAt
+
+    CreateDatasetBody:
+      type: object
+      properties:
+        projectId:
+          type: integer
+        name:
+          type: string
+        sourceType:
+          type: string
+          enum: [csv, excel, manual, api]
+        columns:
+          type: array
+          items:
+            type: string
+      required:
+        - projectId
+        - name
+        - sourceType
+        - columns
+
+    DatasetRowsResponse:
+      type: object
+      properties:
+        rows:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
+        total:
+          type: integer
+        page:
+          type: integer
+        limit:
+          type: integer
+      required:
+        - rows
+        - total
+        - page
+        - limit
+
+    AddDatasetRowsBody:
+      type: object
+      properties:
+        rows:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
+      required:
+        - rows
+
+    Chart:
+      type: object
+      properties:
+        id:
+          type: integer
+        projectId:
+          type: integer
+        datasetId:
+          type: integer
+          nullable: true
+        userId:
+          type: string
+        title:
+          type: string
+        chartType:
+          type: string
+          enum: [line, bar, pie, area, donut, table, kpi, comparison]
+        xAxis:
+          type: string
+          nullable: true
+        yAxis:
+          type: string
+          nullable: true
+        config:
+          type: object
+          additionalProperties: true
+          nullable: true
+        pinnedToDashboard:
+          type: boolean
+        createdAt:
+          type: string
+        updatedAt:
+          type: string
+      required:
+        - id
+        - projectId
+        - userId
+        - title
+        - chartType
+        - pinnedToDashboard
+        - createdAt
+        - updatedAt
+
+    CreateChartBody:
+      type: object
+      properties:
+        projectId:
+          type: integer
+        datasetId:
+          type: integer
+          nullable: true
+        title:
+          type: string
+        chartType:
+          type: string
+          enum: [line, bar, pie, area, donut, table, kpi, comparison]
+        xAxis:
+          type: string
+          nullable: true
+        yAxis:
+          type: string
+          nullable: true
+        config:
+          type: object
+          additionalProperties: true
+          nullable: true
+        pinnedToDashboard:
+          type: boolean
+          default: false
+      required:
+        - projectId
+        - title
+        - chartType
+
+    UpdateChartBody:
+      type: object
+      properties:
+        title:
+          type: string
+        chartType:
+          type: string
+          enum: [line, bar, pie, area, donut, table, kpi, comparison]
+        xAxis:
+          type: string
+          nullable: true
+        yAxis:
+          type: string
+          nullable: true
+        config:
+          type: object
+          additionalProperties: true
+          nullable: true
+        pinnedToDashboard:
+          type: boolean
+
+    Report:
+      type: object
+      properties:
+        id:
+          type: integer
+        projectId:
+          type: integer
+        userId:
+          type: string
+        title:
+          type: string
+        summary:
+          type: string
+          nullable: true
+        chartIds:
+          type: array
+          items:
+            type: integer
+        dateRangeStart:
+          type: string
+          nullable: true
+        dateRangeEnd:
+          type: string
+          nullable: true
+        createdAt:
+          type: string
+      required:
+        - id
+        - projectId
+        - userId
+        - title
+        - chartIds
+        - createdAt
+
+    CreateReportBody:
+      type: object
+      properties:
+        projectId:
+          type: integer
+        title:
+          type: string
+        summary:
+          type: string
+          nullable: true
+        chartIds:
+          type: array
+          items:
+            type: integer
+        dateRangeStart:
+          type: string
+          nullable: true
+        dateRangeEnd:
+          type: string
+          nullable: true
+      required:
+        - projectId
+        - title
+        - chartIds
+
+    Notification:
+      type: object
+      properties:
+        id:
+          type: integer
+        userId:
+          type: string
+        title:
+          type: string
+        message:
+          type: string
+        type:
+          type: string
+          enum: [info, warning, success, error]
+        isRead:
+          type: boolean
+        createdAt:
+          type: string
+      required:
+        - id
+        - userId
+        - title
+        - message
+        - type
+        - isRead
+        - createdAt
+
+    DashboardSummary:
+      type: object
+      properties:
+        totalProjects:
+          type: integer
+        totalDatasets:
+          type: integer
+        totalCharts:
+          type: integer
+        totalReports:
+          type: integer
+        totalRows:
+          type: integer
+        activeProjects:
+          type: integer
+        unreadNotifications:
+          type: integer
+        recentProjectNames:
+          type: array
+          items:
+            type: string
+      required:
+        - totalProjects
+        - totalDatasets
+        - totalCharts
+        - totalReports
+        - totalRows
+        - activeProjects
+        - unreadNotifications
+        - recentProjectNames
+
+    Insight:
+      type: object
+      properties:
+        id:
+          type: string
+        type:
+          type: string
+          enum: [trend, warning, opportunity, summary]
+        title:
+          type: string
+        message:
+          type: string
+        severity:
+          type: string
+          enum: [low, medium, high]
+        createdAt:
+          type: string
+      required:
+        - id
+        - type
+        - title
+        - message
+        - severity
+        - createdAt
+
+    ActivityItem:
+      type: object
+      properties:
+        id:
+          type: integer
+        action:
+          type: string
+        entityType:
+          type: string
+          enum: [project, dataset, chart, report]
+        entityName:
+          type: string
+        createdAt:
+          type: string
+      required:
+        - id
+        - action
+        - entityType
+        - entityName
+        - createdAt
+
+    TrendPoint:
+      type: object
+      properties:
+        month:
+          type: string
+        projects:
+          type: integer
+        datasets:
+          type: integer
+        charts:
+          type: integer
+        reports:
+          type: integer
+      required:
+        - month
+        - projects
+        - datasets
+        - charts
+        - reports

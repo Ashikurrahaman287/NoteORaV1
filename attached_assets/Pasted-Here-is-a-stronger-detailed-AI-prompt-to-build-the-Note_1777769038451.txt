@@ -1,0 +1,522 @@
+Here is a stronger, detailed **AI prompt** to build the **Noteora – Smart Data Analytics Web App**:
+
+---
+
+## Prompt: Build Noteora – Smart Data Analytics Web App
+
+Build a professional, modern, and scalable web application called **Noteora – Smart Data Analytics Web App**.
+
+**Noteora** is a smart data analytics and business intelligence platform that helps individuals, startups, and businesses track data, organize insights, visualize performance, and make better decisions through clean dashboards and structured reporting tools.
+
+The main goal of this web app is to turn raw business data into clear, useful, and visual insights.
+
+---
+
+## Core Concept
+
+Noteora should allow users to upload, manage, analyze, and visualize business data in a clean and user-friendly interface. The platform should help users understand trends, performance, growth, problems, and opportunities through dashboards, charts, reports, and smart summaries.
+
+The app should be suitable for:
+
+* Business owners
+* Startup founders
+* Marketing teams
+* Sales teams
+* Finance teams
+* Operations teams
+* Data analysts
+* Small and medium businesses
+
+---
+
+## Main Features
+
+### 1. User Authentication
+
+Create a secure authentication system with:
+
+* Email/password login
+* Google login option
+* Forgot password
+* User profile management
+* Role-based access system:
+
+  * Admin
+  * Manager
+  * Analyst
+  * Viewer
+
+Each user should have their own private workspace.
+
+---
+
+### 2. Dashboard Overview
+
+Create a powerful main dashboard where users can see their business performance at a glance.
+
+Dashboard should include:
+
+* Total records
+* Revenue overview
+* Expense overview
+* Profit/loss summary
+* Sales performance
+* User/customer growth
+* Monthly trends
+* Recent activity
+* Key performance indicators
+* Top-performing categories
+* Alerts for unusual data changes
+
+Use clean cards, charts, progress indicators, and tables.
+
+---
+
+### 3. Data Upload & Management
+
+Users should be able to import data from different sources.
+
+Include:
+
+* CSV upload
+* Excel upload
+* Manual data entry
+* Google Sheets integration option
+* API import option for future scalability
+
+After uploading data, users should be able to:
+
+* Preview data
+* Clean data
+* Rename columns
+* Remove duplicate rows
+* Filter invalid data
+* Map columns to categories
+* Save datasets into projects
+
+---
+
+### 4. Dataset & Project Management
+
+Create a project-based system where users can organize different data sources.
+
+Example projects:
+
+* Sales Analytics
+* Marketing Campaign Tracking
+* Customer Growth
+* Expense Analysis
+* Inventory Analytics
+* Website Performance
+* Financial Reports
+
+Each project should have:
+
+* Project name
+* Description
+* Dataset list
+* Last updated date
+* Owner/user role
+* Data source type
+* Status: Active, Draft, Archived
+
+---
+
+### 5. Analytics & Visualization
+
+Build an analytics engine that can generate visual insights from uploaded data.
+
+Include chart types:
+
+* Line chart
+* Bar chart
+* Pie chart
+* Area chart
+* Donut chart
+* Table view
+* KPI cards
+* Comparison chart
+* Growth trend chart
+
+Users should be able to:
+
+* Select dataset
+* Choose chart type
+* Select X-axis and Y-axis
+* Apply filters
+* Group data by date, category, product, customer, region, etc.
+* Save charts to dashboard
+* Export charts as image or PDF
+
+---
+
+### 6. Smart Insight Generator
+
+Add an AI-powered insight section that explains the data in simple language.
+
+Example insights:
+
+* “Revenue increased by 18% compared to last month.”
+* “Product A generated the highest sales this quarter.”
+* “Customer growth slowed down in the last 7 days.”
+* “Marketing campaign B had the best conversion rate.”
+* “Expenses increased faster than revenue this month.”
+
+The system should generate:
+
+* Summary insights
+* Trend analysis
+* Warning alerts
+* Growth opportunities
+* Business recommendations
+
+---
+
+### 7. Report Builder
+
+Create a professional report builder where users can generate business reports.
+
+Report features:
+
+* Select project
+* Select date range
+* Select charts and tables
+* Add custom notes
+* Auto-generate summary
+* Export as PDF
+* Export as CSV
+* Schedule report generation
+* Share report with team members
+
+Reports should look clean and professional.
+
+---
+
+### 8. Advanced Filtering System
+
+Add strong filtering options:
+
+* Date range filter
+* Category filter
+* Product filter
+* Customer filter
+* Region filter
+* Status filter
+* Custom column filter
+* Search option
+* Sort ascending/descending
+
+Filters should update charts and tables instantly.
+
+---
+
+### 9. Team Collaboration
+
+Add team workspace features:
+
+* Invite team members
+* Assign roles
+* Share projects
+* Comment on reports
+* Activity logs
+* Permission control
+
+Example permissions:
+
+* Admin can manage everything
+* Manager can edit projects and reports
+* Analyst can create analytics
+* Viewer can only view dashboards
+
+---
+
+### 10. Notification & Alerts
+
+Add smart notifications for important updates.
+
+Examples:
+
+* Data upload completed
+* Report generated
+* Team member joined
+* Revenue dropped suddenly
+* Expense increased unusually
+* Dataset has missing values
+* Scheduled report is ready
+
+---
+
+## Pages Needed
+
+Create the following pages:
+
+1. Landing Page
+2. Login Page
+3. Register Page
+4. Main Dashboard
+5. Projects Page
+6. Dataset Upload Page
+7. Dataset Preview/Cleaning Page
+8. Analytics Builder Page
+9. Saved Dashboards Page
+10. Reports Page
+11. Report Builder Page
+12. Team Members Page
+13. Notifications Page
+14. Settings Page
+15. Billing/Subscription Page
+
+---
+
+## Landing Page Content
+
+The landing page should look premium and professional.
+
+Sections:
+
+### Hero Section
+
+Headline:
+
+**Turn Raw Data Into Smart Business Decisions**
+
+Subheadline:
+
+**Noteora helps teams track, analyze, visualize, and understand business data through clean dashboards, smart reports, and AI-powered insights.**
+
+Buttons:
+
+* Get Started
+* View Demo
+
+### Feature Sections
+
+Highlight:
+
+* Smart data tracking
+* Business dashboards
+* AI-generated insights
+* Data visualization
+* Report automation
+* Team collaboration
+* Secure workspace
+
+### Use Cases
+
+Show cards for:
+
+* Sales analytics
+* Marketing analytics
+* Finance tracking
+* Customer insights
+* Operations reporting
+* Startup performance tracking
+
+### Pricing Preview
+
+Add simple plans:
+
+* Free
+* Pro
+* Business
+* Enterprise
+
+---
+
+## UI/UX Design Style
+
+The design should be:
+
+* Modern
+* Clean
+* Minimal
+* Professional
+* SaaS-style
+* Dashboard-focused
+* Mobile responsive
+* Fast and easy to use
+
+Recommended style:
+
+* Dark and light mode
+* Soft rounded cards
+* Clean sidebar navigation
+* Top search bar
+* Smooth hover effects
+* Professional charts
+* Clear typography
+* Minimal color palette
+* Premium SaaS dashboard feel
+
+---
+
+## Suggested Tech Stack
+
+Use this stack:
+
+### Frontend
+
+* React.js
+* TypeScript
+* Tailwind CSS
+* ShadCN UI
+* Recharts or Chart.js
+* Framer Motion for animation
+
+### Backend
+
+* Node.js
+* Express.js or Next.js API routes
+* PostgreSQL
+* Prisma ORM
+
+### Authentication
+
+* NextAuth.js or Clerk
+
+### File Upload
+
+* CSV parser
+* Excel parser
+* Cloud storage support
+
+### Deployment
+
+* Vercel for frontend
+* Railway/Render for backend
+* Neon/Supabase for PostgreSQL database
+
+---
+
+## Database Models
+
+Create database structure for:
+
+### Users
+
+* id
+* name
+* email
+* password
+* role
+* avatar
+* createdAt
+
+### Workspaces
+
+* id
+* name
+* ownerId
+* createdAt
+
+### Projects
+
+* id
+* workspaceId
+* name
+* description
+* status
+* createdAt
+* updatedAt
+
+### Datasets
+
+* id
+* projectId
+* name
+* sourceType
+* columns
+* rowCount
+* uploadedBy
+* createdAt
+
+### DatasetRows
+
+* id
+* datasetId
+* rowData
+* createdAt
+
+### Dashboards
+
+* id
+* projectId
+* name
+* layout
+* createdBy
+* createdAt
+
+### Charts
+
+* id
+* dashboardId
+* datasetId
+* chartType
+* xAxis
+* yAxis
+* filters
+* config
+* createdAt
+
+### Reports
+
+* id
+* projectId
+* title
+* summary
+* fileUrl
+* createdBy
+* createdAt
+
+### TeamMembers
+
+* id
+* workspaceId
+* userId
+* role
+* status
+* joinedAt
+
+### Notifications
+
+* id
+* userId
+* title
+* message
+* type
+* isRead
+* createdAt
+
+---
+
+## MVP Version Requirements
+
+For the first version, build these features first:
+
+1. User login/register
+2. Dashboard page
+3. Project creation
+4. CSV/Excel upload
+5. Dataset preview
+6. Basic charts
+7. Save chart to dashboard
+8. Report generation
+9. PDF/CSV export
+10. Settings page
+
+After MVP, add:
+
+* AI insights
+* Google Sheets integration
+* Team collaboration
+* Scheduled reports
+* Advanced permissions
+* API integrations
+
+---
+
+## Final Instruction for AI Developer
+
+Build this web app as a production-ready SaaS platform. The code should be clean, scalable, responsive, and easy to maintain. Use reusable components, proper folder structure, secure authentication, database validation, error handling, loading states, empty states, and professional UI design.
+
+The final app should feel like a modern analytics SaaS product similar to platforms such as Mixpanel, Metabase, Tableau Cloud, or Looker Studio, but simpler and easier for small businesses to use.
