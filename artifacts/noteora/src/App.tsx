@@ -1,22 +1,25 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, lazy, Suspense } from "react";
 import { ClerkProvider, SignIn, SignUp, Show, useClerk } from "@clerk/react";
 import { shadcn } from "@clerk/themes";
 import { Switch, Route, useLocation, Router as WouterRouter, Redirect } from "wouter";
 import { QueryClientProvider, useQueryClient } from "@tanstack/react-query";
 import { queryClient } from "./lib/queryClient";
 import { AppLayout } from "./components/layout/AppLayout";
+import { ErrorBoundary } from "./components/error-boundary";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import LandingPage from "./pages/landing";
-import Dashboard from "./pages/dashboard";
-import Projects from "./pages/projects";
-import ProjectDetail from "./pages/project-detail";
-import Datasets from "./pages/datasets";
-import Analytics from "./pages/analytics";
-import Reports from "./pages/reports";
-import Notifications from "./pages/notifications";
-import Settings from "./pages/settings";
-import NotFound from "@/pages/not-found";
+import { Skeleton } from "@/components/ui/skeleton";
+
+const LandingPage = lazy(() => import("./pages/landing"));
+const Dashboard = lazy(() => import("./pages/dashboard"));
+const Projects = lazy(() => import("./pages/projects"));
+const ProjectDetail = lazy(() => import("./pages/project-detail"));
+const Datasets = lazy(() => import("./pages/datasets"));
+const Analytics = lazy(() => import("./pages/analytics"));
+const Reports = lazy(() => import("./pages/reports"));
+const Notifications = lazy(() => import("./pages/notifications"));
+const Settings = lazy(() => import("./pages/settings"));
+const NotFound = lazy(() => import("@/pages/not-found"));
 
 const clerkPubKey = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY;
 const clerkProxyUrl = import.meta.env.VITE_CLERK_PROXY_URL;
@@ -80,6 +83,21 @@ const clerkAppearance = {
   },
 };
 
+function PageLoader() {
+  return (
+    <div className="p-8 space-y-4">
+      <Skeleton className="h-8 w-56" />
+      <Skeleton className="h-4 w-80" />
+      <div className="grid grid-cols-4 gap-4 mt-6">
+        {Array.from({ length: 4 }).map((_, i) => (
+          <Skeleton key={i} className="h-28" />
+        ))}
+      </div>
+      <Skeleton className="h-64 mt-4" />
+    </div>
+  );
+}
+
 function SignInPage() {
   return (
     <div className="flex min-h-[100dvh] items-center justify-center bg-slate-50 dark:bg-slate-950 px-4">
@@ -122,7 +140,9 @@ function HomeRedirect() {
         <Redirect to="/dashboard" />
       </Show>
       <Show when="signed-out">
-        <LandingPage />
+        <Suspense fallback={null}>
+          <LandingPage />
+        </Suspense>
       </Show>
     </>
   );
@@ -133,7 +153,11 @@ function Protected({ component: Component }: { component: React.ComponentType })
     <>
       <Show when="signed-in">
         <AppLayout>
-          <Component />
+          <ErrorBoundary>
+            <Suspense fallback={<PageLoader />}>
+              <Component />
+            </Suspense>
+          </ErrorBoundary>
         </AppLayout>
       </Show>
       <Show when="signed-out">
@@ -171,7 +195,7 @@ function ClerkProviderWithRoutes() {
             <Route path="/reports" component={() => <Protected component={Reports} />} />
             <Route path="/notifications" component={() => <Protected component={Notifications} />} />
             <Route path="/settings" component={() => <Protected component={Settings} />} />
-            <Route component={NotFound} />
+            <Route component={() => <Suspense fallback={<PageLoader />}><NotFound /></Suspense>} />
           </Switch>
         </TooltipProvider>
       </QueryClientProvider>
