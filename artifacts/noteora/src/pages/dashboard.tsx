@@ -1,6 +1,7 @@
 import { useGetDashboardSummary, getGetDashboardSummaryQueryKey, useGetTrends, getGetTrendsQueryKey, useGetRecentActivity, getGetRecentActivityQueryKey, useGetInsights, getGetInsightsQueryKey } from "@workspace/api-client-react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { FolderKanban, Database, BarChart3, FileText, Activity, TrendingUp, TrendingDown, Sparkles, Clock, CheckCircle, AlertTriangle, Info, Zap, Share2, RefreshCw, Bell, Users } from "lucide-react";
+import { OnboardingChecklist } from "@/components/OnboardingChecklist";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Area, AreaChart } from 'recharts';
 import { Skeleton } from "@/components/ui/skeleton";
 import { useUser } from "@clerk/react";
@@ -177,6 +178,15 @@ export default function Dashboard() {
   const { data: activity, isLoading: isLoadingActivity } = useGetRecentActivity({ query: { queryKey: getGetRecentActivityQueryKey() } });
   const { data: insights, isLoading: isLoadingInsights } = useGetInsights({ query: { queryKey: getGetInsightsQueryKey() } });
 
+  // Auto-detect completed onboarding steps from real API data
+  const apiDone: string[] = [];
+  if (summary) {
+    if ((summary.totalProjects ?? 0) > 0)  apiDone.push("project");
+    if ((summary.totalDatasets ?? 0) > 0)  apiDone.push("dataset");
+    if ((summary.totalCharts   ?? 0) > 0)  apiDone.push("chart");
+    if ((summary.totalReports  ?? 0) > 0)  apiDone.push("report");
+  }
+
   return (
     <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
 
@@ -193,6 +203,9 @@ export default function Dashboard() {
           {new Date().toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric" })}
         </div>
       </div>
+
+      {/* Onboarding checklist — shown until dismissed or all steps done */}
+      <OnboardingChecklist apiDone={apiDone} />
 
       {/* KPIs */}
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
