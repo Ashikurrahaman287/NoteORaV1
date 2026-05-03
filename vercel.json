@@ -5,17 +5,6 @@
   "installCommand": "pnpm install --frozen-lockfile",
   "buildCommand": "BASE_PATH=/ pnpm run build:vercel",
   "outputDirectory": "artifacts/noteora/dist/public",
-  "env": [
-    "DATABASE_URL",
-    "CLERK_PUBLISHABLE_KEY",
-    "CLERK_SECRET_KEY",
-    "SESSION_SECRET",
-    "ALLOWED_ORIGINS",
-    "LOG_LEVEL",
-    "VITE_CLERK_PUBLISHABLE_KEY",
-    "VITE_CLERK_PROXY_URL",
-    "NODE_ENV"
-  ],
   "functions": {
     "api/index.ts": {
       "memory": 1024,
