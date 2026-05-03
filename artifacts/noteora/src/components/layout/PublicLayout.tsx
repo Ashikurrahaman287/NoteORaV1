@@ -1,6 +1,7 @@
 import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
-import { ChevronRight, Shield, Users, Globe } from "lucide-react";
+import { ChevronRight, Shield, Users, Globe, Menu, X } from "lucide-react";
+import { useState } from "react";
 
 const NAV_LINKS = [
   { label: "How it works", href: "/how-it-works" },
@@ -40,14 +41,21 @@ const FOOTER_COLS = [
 ];
 
 export function PublicLayout({ children }: { children: React.ReactNode }) {
+  const [mobileOpen, setMobileOpen] = useState(false);
+
   return (
     <div className="min-h-screen bg-background text-foreground overflow-x-hidden flex flex-col">
       {/* Nav */}
       <header className="fixed top-0 w-full z-50 border-b border-border/50 bg-background/85 backdrop-blur-xl">
         <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
-          <Link href="/">
-            <span className="text-lg font-extrabold tracking-tight cursor-pointer hover:text-primary transition-colors">Noteora</span>
+          {/* Wordmark */}
+          <Link href="/" onClick={() => setMobileOpen(false)}>
+            <span className="text-lg font-extrabold tracking-tight cursor-pointer hover:text-primary transition-colors">
+              Noteora
+            </span>
           </Link>
+
+          {/* Desktop nav */}
           <nav className="hidden md:flex items-center gap-8 text-sm">
             {NAV_LINKS.map((l) => (
               <Link key={l.href} href={l.href}>
@@ -57,9 +65,11 @@ export function PublicLayout({ children }: { children: React.ReactNode }) {
               </Link>
             ))}
           </nav>
-          <div className="flex items-center gap-3">
+
+          {/* Desktop CTA */}
+          <div className="hidden md:flex items-center gap-3">
             <Link href="/sign-in">
-              <Button variant="ghost" size="sm" className="hidden sm:inline-flex text-muted-foreground hover:text-foreground">
+              <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-foreground">
                 Log in
               </Button>
             </Link>
@@ -69,7 +79,50 @@ export function PublicLayout({ children }: { children: React.ReactNode }) {
               </Button>
             </Link>
           </div>
+
+          {/* Mobile: CTA + hamburger */}
+          <div className="flex md:hidden items-center gap-2">
+            <Link href="/sign-up" onClick={() => setMobileOpen(false)}>
+              <Button size="sm" className="shadow-md shadow-primary/20">
+                Get Started
+              </Button>
+            </Link>
+            <button
+              onClick={() => setMobileOpen((o) => !o)}
+              className="h-9 w-9 flex items-center justify-center rounded-lg border border-border hover:bg-muted transition-colors"
+              aria-label={mobileOpen ? "Close menu" : "Open menu"}
+            >
+              {mobileOpen ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
+            </button>
+          </div>
         </div>
+
+        {/* Mobile drawer */}
+        {mobileOpen && (
+          <div className="md:hidden border-t border-border bg-background/95 backdrop-blur-xl">
+            <nav className="max-w-7xl mx-auto px-6 py-4 flex flex-col gap-1">
+              {NAV_LINKS.map((l) => (
+                <Link key={l.href} href={l.href} onClick={() => setMobileOpen(false)}>
+                  <span className="flex items-center h-11 text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-muted/50 rounded-lg px-3 transition-colors cursor-pointer">
+                    {l.label}
+                  </span>
+                </Link>
+              ))}
+              <div className="border-t border-border mt-2 pt-3 flex flex-col gap-2">
+                <Link href="/sign-in" onClick={() => setMobileOpen(false)}>
+                  <Button variant="outline" size="sm" className="w-full">
+                    Log in
+                  </Button>
+                </Link>
+                <Link href="/sign-up" onClick={() => setMobileOpen(false)}>
+                  <Button size="sm" className="w-full shadow-md shadow-primary/20">
+                    Get Started <ChevronRight className="ml-1 h-3.5 w-3.5" />
+                  </Button>
+                </Link>
+              </div>
+            </nav>
+          </div>
+        )}
       </header>
 
       {/* Page content */}
@@ -81,7 +134,9 @@ export function PublicLayout({ children }: { children: React.ReactNode }) {
           <div className="grid md:grid-cols-5 gap-10 mb-12">
             <div className="md:col-span-2">
               <Link href="/">
-                <img src="/noteora-logo.png" alt="Noteora" className="h-9 w-auto mb-4 cursor-pointer" />
+                <span className="text-lg font-extrabold tracking-tight cursor-pointer hover:text-primary transition-colors block mb-4">
+                  Noteora
+                </span>
               </Link>
               <p className="text-sm text-muted-foreground max-w-xs leading-relaxed">
                 Data intelligence for the modern enterprise. Founded by AGT Venture. Import, visualize, and share your data with confidence.
