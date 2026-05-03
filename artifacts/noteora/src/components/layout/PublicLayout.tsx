@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { ChevronRight, Shield, Users, Globe } from "lucide-react";
 
 const NAV_LINKS = [
-  { label: "How it works", href: "/#how-it-works" },
+  { label: "How it works", href: "/how-it-works" },
   { label: "Features", href: "/features" },
   { label: "Pricing", href: "/pricing" },
   { label: "Blog", href: "/blog" },

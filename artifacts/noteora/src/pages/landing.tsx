@@ -191,8 +191,10 @@ export default function LandingPage() {
             <img src="/noteora-logo.png" alt="Noteora" className="h-9 w-auto" />
           </div>
           <nav className="hidden md:flex items-center gap-8 text-sm">
+            <Link href="/how-it-works">
+              <span className="text-muted-foreground hover:text-foreground transition-colors cursor-pointer">How it works</span>
+            </Link>
             {[
-              { label: "How it works", id: "how-it-works" },
               { label: "Features", id: "features" },
               { label: "Pricing", id: "pricing" },
               { label: "Reviews", id: "testimonials" },

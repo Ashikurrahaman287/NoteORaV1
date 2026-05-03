@@ -33,6 +33,7 @@ const RoadmapPage = lazy(() => import("./pages/roadmap"));
 const FeaturesPage = lazy(() => import("./pages/features"));
 const PricingPage = lazy(() => import("./pages/pricing"));
 const BlogPostPage = lazy(() => import("./pages/blog-post"));
+const HowItWorksPage = lazy(() => import("./pages/how-it-works"));
 
 const clerkPubKey = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY;
 const clerkProxyUrl = import.meta.env.VITE_CLERK_PROXY_URL;
@@ -201,6 +202,7 @@ function ClerkProviderWithRoutes() {
             <Route path="/sign-in/*?" component={SignInPage} />
             <Route path="/sign-up/*?" component={SignUpPage} />
             {/* Public pages */}
+            <Route path="/how-it-works" component={() => <Suspense fallback={<PageLoader />}><HowItWorksPage /></Suspense>} />
             <Route path="/about" component={() => <Suspense fallback={<PageLoader />}><AboutPage /></Suspense>} />
             <Route path="/blog/:slug" component={() => <Suspense fallback={<PageLoader />}><BlogPostPage /></Suspense>} />
             <Route path="/blog" component={() => <Suspense fallback={<PageLoader />}><BlogPage /></Suspense>} />
