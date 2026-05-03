@@ -578,16 +578,16 @@ export default function LandingPage() {
               </div>
             </div>
             {[
-              { heading: "Product", links: ["Features", "Pricing", "Changelog", "Roadmap"] },
-              { heading: "Company", links: ["About", "Blog", "Careers", "Contact"] },
-              { heading: "Legal", links: ["Privacy Policy", "Terms of Service", "Security", "Cookies"] },
+              { heading: "Product", links: [{ label: "Features", href: "/features" }, { label: "Pricing", href: "/pricing" }, { label: "Changelog", href: "/changelog" }, { label: "Roadmap", href: "/roadmap" }] },
+              { heading: "Company", links: [{ label: "About", href: "/about" }, { label: "Blog", href: "/blog" }, { label: "Careers", href: "/careers" }, { label: "Contact", href: "/contact" }] },
+              { heading: "Legal", links: [{ label: "Privacy Policy", href: "/privacy" }, { label: "Terms of Service", href: "/terms" }, { label: "Security", href: "/security" }, { label: "Cookies", href: "/cookies" }] },
             ].map((col) => (
               <div key={col.heading}>
                 <h4 className="font-bold text-sm mb-4">{col.heading}</h4>
                 <ul className="space-y-2.5">
                   {col.links.map((l) => (
-                    <li key={l}>
-                      <a href="#" className="text-sm text-muted-foreground hover:text-foreground transition-colors">{l}</a>
+                    <li key={l.label}>
+                      <Link href={l.href} className="text-sm text-muted-foreground hover:text-foreground transition-colors">{l.label}</Link>
                     </li>
                   ))}
                 </ul>

@@ -1,0 +1,128 @@
+import { Link } from "wouter";
+import { Button } from "@/components/ui/button";
+import { ChevronRight, Shield, Users, Globe } from "lucide-react";
+
+const NAV_LINKS = [
+  { label: "How it works", href: "/#how-it-works" },
+  { label: "Features", href: "/features" },
+  { label: "Pricing", href: "/pricing" },
+  { label: "Blog", href: "/blog" },
+];
+
+const FOOTER_COLS = [
+  {
+    heading: "Product",
+    links: [
+      { label: "Features", href: "/features" },
+      { label: "Pricing", href: "/pricing" },
+      { label: "Changelog", href: "/changelog" },
+      { label: "Roadmap", href: "/roadmap" },
+    ],
+  },
+  {
+    heading: "Company",
+    links: [
+      { label: "About", href: "/about" },
+      { label: "Blog", href: "/blog" },
+      { label: "Careers", href: "/careers" },
+      { label: "Contact", href: "/contact" },
+    ],
+  },
+  {
+    heading: "Legal",
+    links: [
+      { label: "Privacy Policy", href: "/privacy" },
+      { label: "Terms of Service", href: "/terms" },
+      { label: "Security", href: "/security" },
+      { label: "Cookies", href: "/cookies" },
+    ],
+  },
+];
+
+export function PublicLayout({ children }: { children: React.ReactNode }) {
+  return (
+    <div className="min-h-screen bg-background text-foreground overflow-x-hidden flex flex-col">
+      {/* Nav */}
+      <header className="fixed top-0 w-full z-50 border-b border-border/50 bg-background/85 backdrop-blur-xl">
+        <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
+          <Link href="/">
+            <img src="/noteora-logo.png" alt="Noteora" className="h-9 w-auto cursor-pointer" />
+          </Link>
+          <nav className="hidden md:flex items-center gap-8 text-sm">
+            {NAV_LINKS.map((l) => (
+              <Link key={l.href} href={l.href}>
+                <span className="text-muted-foreground hover:text-foreground transition-colors cursor-pointer">
+                  {l.label}
+                </span>
+              </Link>
+            ))}
+          </nav>
+          <div className="flex items-center gap-3">
+            <Link href="/sign-in">
+              <Button variant="ghost" size="sm" className="hidden sm:inline-flex text-muted-foreground hover:text-foreground">
+                Log in
+              </Button>
+            </Link>
+            <Link href="/sign-up">
+              <Button size="sm" className="shadow-md shadow-primary/20">
+                Get Started <ChevronRight className="ml-1 h-3.5 w-3.5" />
+              </Button>
+            </Link>
+          </div>
+        </div>
+      </header>
+
+      {/* Page content */}
+      <main className="pt-16 flex-1">{children}</main>
+
+      {/* Footer */}
+      <footer className="border-t border-border bg-muted/20 mt-20">
+        <div className="max-w-7xl mx-auto px-6 py-14">
+          <div className="grid md:grid-cols-5 gap-10 mb-12">
+            <div className="md:col-span-2">
+              <Link href="/">
+                <img src="/noteora-logo.png" alt="Noteora" className="h-9 w-auto mb-4 cursor-pointer" />
+              </Link>
+              <p className="text-sm text-muted-foreground max-w-xs leading-relaxed">
+                Data intelligence for the modern enterprise. Founded by AGT Venture. Import, visualize, and share your data with confidence.
+              </p>
+              <div className="flex gap-3 mt-5">
+                {[Shield, Users, Globe].map((Icon, i) => (
+                  <div key={i} className="h-8 w-8 rounded-lg border border-border flex items-center justify-center text-muted-foreground hover:text-foreground hover:border-primary/40 cursor-pointer transition-colors">
+                    <Icon className="h-4 w-4" />
+                  </div>
+                ))}
+              </div>
+            </div>
+            {FOOTER_COLS.map((col) => (
+              <div key={col.heading}>
+                <h4 className="font-bold text-sm mb-4">{col.heading}</h4>
+                <ul className="space-y-2.5">
+                  {col.links.map((l) => (
+                    <li key={l.href}>
+                      <Link href={l.href}>
+                        <span className="text-sm text-muted-foreground hover:text-foreground transition-colors cursor-pointer">
+                          {l.label}
+                        </span>
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </div>
+          <div className="border-t border-border pt-6 flex flex-col sm:flex-row justify-between items-center gap-4">
+            <p className="text-xs text-muted-foreground">© {new Date().getFullYear()} Noteora, Inc. · A product of AGT Venture. All rights reserved.</p>
+            <div className="flex items-center gap-4">
+              <span className="text-xs text-muted-foreground">SOC 2 Compliant</span>
+              <span className="text-muted-foreground/30">·</span>
+              <span className="text-xs text-muted-foreground">GDPR Ready</span>
+              <span className="text-muted-foreground/30">·</span>
+              <span className="text-xs text-muted-foreground">99.9% Uptime</span>
+            </div>
+          </div>
+        </div>
+      </footer>
+    </div>
+  );
+}

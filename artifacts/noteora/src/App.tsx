@@ -20,6 +20,18 @@ const Reports = lazy(() => import("./pages/reports"));
 const Notifications = lazy(() => import("./pages/notifications"));
 const Settings = lazy(() => import("./pages/settings"));
 const NotFound = lazy(() => import("@/pages/not-found"));
+const AboutPage = lazy(() => import("./pages/about"));
+const BlogPage = lazy(() => import("./pages/blog"));
+const CareersPage = lazy(() => import("./pages/careers"));
+const ContactPage = lazy(() => import("./pages/contact"));
+const PrivacyPage = lazy(() => import("./pages/privacy"));
+const TermsPage = lazy(() => import("./pages/terms"));
+const SecurityPage = lazy(() => import("./pages/security"));
+const CookiesPage = lazy(() => import("./pages/cookies"));
+const ChangelogPage = lazy(() => import("./pages/changelog"));
+const RoadmapPage = lazy(() => import("./pages/roadmap"));
+const FeaturesPage = lazy(() => import("./pages/features"));
+const PricingPage = lazy(() => import("./pages/pricing"));
 
 const clerkPubKey = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY;
 const clerkProxyUrl = import.meta.env.VITE_CLERK_PROXY_URL;
@@ -187,6 +199,20 @@ function ClerkProviderWithRoutes() {
             <Route path="/" component={HomeRedirect} />
             <Route path="/sign-in/*?" component={SignInPage} />
             <Route path="/sign-up/*?" component={SignUpPage} />
+            {/* Public pages */}
+            <Route path="/about" component={() => <Suspense fallback={<PageLoader />}><AboutPage /></Suspense>} />
+            <Route path="/blog" component={() => <Suspense fallback={<PageLoader />}><BlogPage /></Suspense>} />
+            <Route path="/careers" component={() => <Suspense fallback={<PageLoader />}><CareersPage /></Suspense>} />
+            <Route path="/contact" component={() => <Suspense fallback={<PageLoader />}><ContactPage /></Suspense>} />
+            <Route path="/privacy" component={() => <Suspense fallback={<PageLoader />}><PrivacyPage /></Suspense>} />
+            <Route path="/terms" component={() => <Suspense fallback={<PageLoader />}><TermsPage /></Suspense>} />
+            <Route path="/security" component={() => <Suspense fallback={<PageLoader />}><SecurityPage /></Suspense>} />
+            <Route path="/cookies" component={() => <Suspense fallback={<PageLoader />}><CookiesPage /></Suspense>} />
+            <Route path="/changelog" component={() => <Suspense fallback={<PageLoader />}><ChangelogPage /></Suspense>} />
+            <Route path="/roadmap" component={() => <Suspense fallback={<PageLoader />}><RoadmapPage /></Suspense>} />
+            <Route path="/features" component={() => <Suspense fallback={<PageLoader />}><FeaturesPage /></Suspense>} />
+            <Route path="/pricing" component={() => <Suspense fallback={<PageLoader />}><PricingPage /></Suspense>} />
+            {/* Protected app pages */}
             <Route path="/dashboard" component={() => <Protected component={Dashboard} />} />
             <Route path="/projects/:id" component={() => <Protected component={ProjectDetail} />} />
             <Route path="/projects" component={() => <Protected component={Projects} />} />
