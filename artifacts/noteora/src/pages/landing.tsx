@@ -1,13 +1,15 @@
 import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
-import { motion } from "framer-motion";
-import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { useState, useEffect } from "react";
 import {
   ArrowRight, Database, Lock, Zap, LineChart,
   Shield, Users, TrendingUp, CheckCircle2, FileText,
   BellRing, Star, ChevronRight, BarChart3,
   Sparkles, Globe, GitBranch, Menu, X, Play,
   ArrowUpRight, Award, Clock, Cpu, RefreshCw,
+  Upload, Link2, Share2, Copy, Download, BarChart2,
+  PieChart, Activity, Table2, Check,
 } from "lucide-react";
 
 const heroAnim = (delay = 0) => ({
@@ -198,6 +200,432 @@ const TRUST_ITEMS = [
   { icon: Clock, label: "< 180ms Latency" },
   { icon: Cpu, label: "AES-256 Encryption" },
 ];
+
+const DEMO_TABS = [
+  { id: "import", label: "01 · Import Data", icon: Upload },
+  { id: "build",  label: "02 · Build Charts", icon: BarChart2 },
+  { id: "share",  label: "03 · Share & Report", icon: Share2 },
+];
+
+function DemoImport() {
+  const [progress, setProgress] = useState(0);
+  const [done, setDone] = useState(false);
+  useEffect(() => {
+    setProgress(0); setDone(false);
+    const t = setTimeout(() => {
+      let p = 0;
+      const iv = setInterval(() => {
+        p += 4;
+        setProgress(Math.min(p, 100));
+        if (p >= 100) { clearInterval(iv); setDone(true); }
+      }, 40);
+      return () => clearInterval(iv);
+    }, 300);
+    return () => clearTimeout(t);
+  }, []);
+
+  const sources = [
+    { name: "Q4_Revenue.csv", size: "2.4 MB", status: done ? "done" : progress > 10 ? "uploading" : "waiting", pct: Math.min(progress * 1.2, 100) },
+    { name: "Salesforce API", size: "Live sync", status: done ? "done" : progress > 35 ? "done" : "waiting", pct: 100 },
+    { name: "marketing_data.xlsx", size: "890 KB", status: done ? "done" : progress > 55 ? "uploading" : "waiting", pct: Math.min(Math.max((progress - 55) * 3, 0), 100) },
+  ];
+
+  return (
+    <div className="flex flex-col gap-4 h-full">
+      {/* Drop zone */}
+      <div className="border-2 border-dashed border-primary/30 rounded-xl p-6 flex flex-col items-center justify-center bg-primary/3 hover:bg-primary/5 transition-colors cursor-pointer group">
+        <div className="h-10 w-10 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center mb-3 group-hover:scale-105 transition-transform">
+          <Upload className="h-5 w-5 text-primary" />
+        </div>
+        <p className="text-sm font-semibold text-foreground">Drop files here or click to upload</p>
+        <p className="text-xs text-muted-foreground mt-1">CSV, Excel, JSON · Up to 5GB per file</p>
+      </div>
+      {/* Source list */}
+      <div className="space-y-2.5">
+        {sources.map((s) => (
+          <div key={s.name} className="bg-card border border-border rounded-xl p-3.5 flex items-center gap-3">
+            <div className={`h-8 w-8 rounded-lg flex items-center justify-center shrink-0 ${s.status === "done" ? "bg-emerald-500/10 border border-emerald-500/20" : "bg-primary/10 border border-primary/20"}`}>
+              {s.status === "done" ? <Check className="h-4 w-4 text-emerald-500" /> : <Database className="h-4 w-4 text-primary" />}
+            </div>
+            <div className="flex-1 min-w-0">
+              <div className="flex items-center justify-between mb-1">
+                <span className="text-xs font-semibold truncate">{s.name}</span>
+                <span className="text-[10px] text-muted-foreground ml-2 shrink-0">{s.size}</span>
+              </div>
+              <div className="h-1 bg-border rounded-full overflow-hidden">
+                <div
+                  className={`h-full rounded-full transition-all duration-150 ${s.status === "done" ? "bg-emerald-500" : "bg-primary"}`}
+                  style={{ width: `${s.status === "done" ? 100 : s.pct}%` }}
+                />
+              </div>
+            </div>
+            <span className={`text-[10px] font-bold shrink-0 ${s.status === "done" ? "text-emerald-500" : "text-primary"}`}>
+              {s.status === "done" ? "Ready" : s.status === "uploading" ? "Importing…" : "Queued"}
+            </span>
+          </div>
+        ))}
+      </div>
+      {/* Preview table */}
+      {done && (
+        <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.35 }} className="bg-card border border-border rounded-xl overflow-hidden">
+          <div className="flex items-center justify-between px-4 py-2.5 border-b border-border bg-muted/30">
+            <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">Data preview · 1,247 rows detected</span>
+            <div className="flex items-center gap-1.5 text-[10px] font-semibold text-primary">
+              <Table2 className="h-3 w-3" /> View full table
+            </div>
+          </div>
+          <table className="w-full text-[10px]">
+            <thead>
+              <tr className="border-b border-border bg-muted/20">
+                {["Date", "Revenue", "Region", "Product", "Growth"].map(h => (
+                  <th key={h} className="text-left px-3 py-2 font-bold text-muted-foreground">{h}</th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {[
+                ["2026-01", "$248,400", "APAC", "Pro", "+18.3%"],
+                ["2026-01", "$184,200", "EMEA", "Enterprise", "+12.1%"],
+                ["2026-01", "$312,800", "NA", "Pro", "+22.7%"],
+              ].map((row, i) => (
+                <tr key={i} className="border-b border-border/50 last:border-0 hover:bg-muted/20 transition-colors">
+                  {row.map((cell, j) => (
+                    <td key={j} className={`px-3 py-2 ${j === 4 ? "text-emerald-500 font-bold" : "text-foreground"}`}>{cell}</td>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </motion.div>
+      )}
+    </div>
+  );
+}
+
+function DemoBuild() {
+  const [activeChart, setActiveChart] = useState(0);
+  const chartTypes = [
+    { icon: BarChart2, label: "Bar" },
+    { icon: Activity, label: "Line" },
+    { icon: PieChart, label: "Donut" },
+    { icon: BarChart3, label: "Area" },
+    { icon: LineChart, label: "Scatter" },
+    { icon: Table2, label: "Table" },
+  ];
+  const BAR_DATA = [42, 68, 55, 82, 73, 91, 65, 104];
+  const MONTHS = ["Jun","Jul","Aug","Sep","Oct","Nov","Dec","Jan"];
+
+  return (
+    <div className="flex gap-4 h-full">
+      {/* Left: chart type picker */}
+      <div className="w-32 shrink-0 flex flex-col gap-1">
+        <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider mb-2 px-1">Chart type</p>
+        {chartTypes.map((c, i) => (
+          <button
+            key={i}
+            onClick={() => setActiveChart(i)}
+            className={`flex items-center gap-2 px-2.5 py-2 rounded-lg text-xs font-medium transition-colors text-left w-full ${
+              activeChart === i
+                ? "bg-primary text-primary-foreground"
+                : "text-muted-foreground hover:bg-muted hover:text-foreground"
+            }`}
+          >
+            <c.icon className="h-3.5 w-3.5 shrink-0" />
+            {c.label}
+          </button>
+        ))}
+      </div>
+
+      {/* Main: chart */}
+      <div className="flex-1 flex flex-col gap-3">
+        <div className="bg-card border border-border rounded-xl p-4 flex-1 flex flex-col">
+          <div className="flex items-center justify-between mb-4">
+            <div>
+              <p className="text-xs font-bold">Revenue by Month</p>
+              <p className="text-[10px] text-muted-foreground">Q2 2025 – Q1 2026</p>
+            </div>
+            <div className="flex items-center gap-1.5">
+              <div className="h-2 w-2 rounded-full bg-primary" />
+              <span className="text-[10px] text-muted-foreground">MRR ($k)</span>
+            </div>
+          </div>
+          {activeChart === 0 && (
+            <div className="flex-1 flex flex-col justify-end">
+              <div className="flex items-end gap-2 h-28">
+                {BAR_DATA.map((h, i) => (
+                  <motion.div
+                    key={i}
+                    className="flex-1 rounded-t-md"
+                    style={{ background: `hsl(217 91% ${52 + i}%)` }}
+                    initial={{ height: 0 }}
+                    animate={{ height: `${(h / 110) * 100}%` }}
+                    transition={{ duration: 0.5, delay: i * 0.06 }}
+                  />
+                ))}
+              </div>
+              <div className="flex gap-2 mt-2">
+                {MONTHS.map(m => <div key={m} className="flex-1 text-center text-[8px] text-muted-foreground">{m}</div>)}
+              </div>
+            </div>
+          )}
+          {activeChart === 1 && (
+            <div className="flex-1 flex items-end">
+              <svg viewBox="0 0 320 100" className="w-full" preserveAspectRatio="none">
+                <polyline
+                  points={BAR_DATA.map((h, i) => `${i * 45 + 5},${100 - (h / 110) * 90}`).join(" ")}
+                  fill="none"
+                  stroke="hsl(217 91% 60%)"
+                  strokeWidth="2.5"
+                  strokeLinejoin="round"
+                  strokeLinecap="round"
+                />
+                {BAR_DATA.map((h, i) => (
+                  <circle key={i} cx={i * 45 + 5} cy={100 - (h / 110) * 90} r="3.5" fill="hsl(217 91% 60%)" />
+                ))}
+              </svg>
+            </div>
+          )}
+          {activeChart === 2 && (
+            <div className="flex-1 flex items-center justify-center">
+              <div className="relative h-24 w-24">
+                <svg viewBox="0 0 100 100" className="w-full h-full -rotate-90">
+                  <circle cx="50" cy="50" r="40" fill="none" stroke="hsl(217 91% 60%)" strokeWidth="20" strokeDasharray="160 92" />
+                  <circle cx="50" cy="50" r="40" fill="none" stroke="hsl(187 91% 50%)" strokeWidth="20" strokeDasharray="55 197" strokeDashoffset="-160" />
+                  <circle cx="50" cy="50" r="40" fill="none" stroke="hsl(260 91% 60%)" strokeWidth="20" strokeDasharray="37 215" strokeDashoffset="-215" />
+                </svg>
+                <div className="absolute inset-0 flex flex-col items-center justify-center">
+                  <span className="text-xs font-extrabold">$2.4M</span>
+                  <span className="text-[8px] text-muted-foreground">Total</span>
+                </div>
+              </div>
+              <div className="ml-4 space-y-2">
+                {[["NA", "bg-blue-500"], ["APAC", "bg-cyan-400"], ["EMEA", "bg-violet-500"]].map(([r, c]) => (
+                  <div key={r} className="flex items-center gap-2">
+                    <div className={`h-2 w-2 rounded-full ${c}`} />
+                    <span className="text-[10px] text-muted-foreground">{r}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+          {activeChart >= 3 && (
+            <div className="flex-1 flex items-center justify-center">
+              <div className="text-center">
+                <div className="h-10 w-10 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center mx-auto mb-2">
+                  {(() => { const C = chartTypes[activeChart].icon; return <C className="h-5 w-5 text-primary" />; })()}
+                </div>
+                <p className="text-xs font-semibold">{chartTypes[activeChart].label} chart selected</p>
+                <p className="text-[10px] text-muted-foreground mt-1">Configure axes to render</p>
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* Axis config */}
+        <div className="bg-card border border-border rounded-xl p-3 flex items-center gap-4">
+          {[["X Axis", "Month"], ["Y Axis", "Revenue ($)"], ["Colour by", "Region"]].map(([label, val]) => (
+            <div key={label} className="flex-1">
+              <p className="text-[9px] text-muted-foreground font-semibold uppercase tracking-wider mb-1">{label}</p>
+              <div className="bg-muted/50 border border-border rounded-md px-2 py-1.5 text-[10px] font-medium text-foreground">{val}</div>
+            </div>
+          ))}
+          <Button size="sm" className="shrink-0 h-8 text-xs px-3 mt-4">Pin to dashboard</Button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function DemoShare() {
+  const [copied, setCopied] = useState(false);
+
+  const handleCopy = () => {
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+
+  return (
+    <div className="flex flex-col gap-4 h-full">
+      {/* Report preview */}
+      <div className="bg-card border border-border rounded-xl overflow-hidden flex-1">
+        <div className="flex items-center justify-between px-5 py-3.5 border-b border-border bg-muted/30">
+          <div className="flex items-center gap-2.5">
+            <div className="h-7 w-7 rounded-lg bg-primary flex items-center justify-center">
+              <FileText className="h-3.5 w-3.5 text-primary-foreground" />
+            </div>
+            <div>
+              <p className="text-xs font-bold leading-none">Q4 Revenue Report</p>
+              <p className="text-[10px] text-muted-foreground mt-0.5">Generated · January 2026 · Noteora</p>
+            </div>
+          </div>
+          <div className="flex gap-2">
+            {[
+              { icon: Download, label: "PDF" },
+              { icon: Globe, label: "HTML" },
+              { icon: Link2, label: "Embed" },
+            ].map(({ icon: Icon, label }) => (
+              <button key={label} className="flex items-center gap-1.5 text-[10px] font-semibold text-muted-foreground hover:text-foreground border border-border hover:border-primary/40 rounded-md px-2.5 py-1.5 transition-colors">
+                <Icon className="h-3 w-3" />
+                {label}
+              </button>
+            ))}
+          </div>
+        </div>
+        <div className="p-4 grid grid-cols-3 gap-3">
+          {[
+            { label: "Total MRR", value: "$2.4M", delta: "+18.3%", color: "text-emerald-500" },
+            { label: "Active users", value: "12,847", delta: "+6.1%", color: "text-emerald-500" },
+            { label: "Retention", value: "94.2%", delta: "+1.4pp", color: "text-emerald-500" },
+          ].map(({ label, value, delta, color }) => (
+            <div key={label} className="rounded-xl border border-border p-3 bg-background">
+              <p className="text-[10px] text-muted-foreground mb-1">{label}</p>
+              <p className="text-lg font-extrabold tracking-tight">{value}</p>
+              <p className={`text-[10px] font-bold mt-0.5 ${color}`}>{delta} vs Q3</p>
+            </div>
+          ))}
+        </div>
+        <div className="mx-4 mb-4 rounded-xl border border-border overflow-hidden bg-background">
+          <div className="px-4 py-2.5 border-b border-border bg-muted/20 flex items-center justify-between">
+            <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">MRR Trend · 12 months</span>
+          </div>
+          <div className="p-4 flex items-end gap-1.5 h-16">
+            {[28,38,35,52,48,65,58,74,62,88,79,100].map((h,i) => (
+              <div key={i} className="flex-1 rounded-sm" style={{ height:`${h}%`, background:`hsl(217 91% ${52+i*1.5}% / ${0.5+i*0.04})` }} />
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Share controls */}
+      <div className="bg-card border border-border rounded-xl p-4 space-y-4">
+        <div>
+          <p className="text-xs font-bold mb-2">Share link</p>
+          <div className="flex gap-2">
+            <div className="flex-1 bg-muted/50 border border-border rounded-lg px-3 py-2 flex items-center gap-2">
+              <Link2 className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
+              <span className="text-[11px] text-muted-foreground font-mono truncate">noteora.app/r/q4-revenue-2026-xk7</span>
+            </div>
+            <button
+              onClick={handleCopy}
+              className={`flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-semibold border transition-all duration-200 ${
+                copied
+                  ? "bg-emerald-500/10 border-emerald-500/30 text-emerald-600"
+                  : "bg-primary text-primary-foreground border-primary hover:bg-primary/90"
+              }`}
+            >
+              {copied ? <Check className="h-3.5 w-3.5" /> : <Copy className="h-3.5 w-3.5" />}
+              {copied ? "Copied!" : "Copy"}
+            </button>
+          </div>
+        </div>
+        <div className="flex items-center justify-between">
+          <div>
+            <p className="text-xs font-bold mb-1">Shared with</p>
+            <div className="flex items-center gap-1.5">
+              {[
+                { initials: "SC", color: "bg-blue-600" },
+                { initials: "JO", color: "bg-violet-600" },
+                { initials: "PN", color: "bg-emerald-600" },
+                { initials: "MK", color: "bg-rose-600" },
+              ].map(({ initials, color }) => (
+                <div key={initials} className={`h-7 w-7 rounded-full ${color} border-2 border-background flex items-center justify-center text-[9px] text-white font-extrabold -ml-1 first:ml-0`}>
+                  {initials}
+                </div>
+              ))}
+              <span className="text-[10px] text-muted-foreground ml-2">4 team members</span>
+            </div>
+          </div>
+          <div className="text-right">
+            <p className="text-[10px] text-muted-foreground">Scheduled delivery</p>
+            <p className="text-xs font-bold">Every Monday, 9 AM</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+const DEMO_PANELS: Record<string, React.ComponentType> = {
+  import: DemoImport,
+  build: DemoBuild,
+  share: DemoShare,
+};
+
+const AUTO_ADVANCE_MS = 6000;
+
+function InteractiveDemo() {
+  const [active, setActive] = useState("import");
+  const [progress, setProgress] = useState(0);
+
+  useEffect(() => {
+    setProgress(0);
+    const start = Date.now();
+    const raf = requestAnimationFrame(function tick() {
+      const elapsed = Date.now() - start;
+      const pct = Math.min((elapsed / AUTO_ADVANCE_MS) * 100, 100);
+      setProgress(pct);
+      if (pct < 100) {
+        requestAnimationFrame(tick);
+      } else {
+        setActive(prev => {
+          const idx = DEMO_TABS.findIndex(t => t.id === prev);
+          return DEMO_TABS[(idx + 1) % DEMO_TABS.length].id;
+        });
+      }
+    });
+    return () => cancelAnimationFrame(raf);
+  }, [active]);
+
+  const Panel = DEMO_PANELS[active];
+
+  return (
+    <motion.div {...scrollAnim()} className="rounded-2xl border border-border bg-card shadow-xl overflow-hidden">
+      {/* Tab bar */}
+      <div className="flex items-stretch border-b border-border bg-muted/30">
+        {DEMO_TABS.map((tab) => {
+          const isActive = tab.id === active;
+          return (
+            <button
+              key={tab.id}
+              onClick={() => setActive(tab.id)}
+              className={`relative flex items-center gap-2.5 px-6 py-4 text-sm font-semibold transition-colors flex-1 justify-center ${
+                isActive
+                  ? "bg-background text-foreground border-b-2 border-primary"
+                  : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
+              }`}
+            >
+              <tab.icon className="h-4 w-4 shrink-0" />
+              <span className="hidden sm:inline">{tab.label}</span>
+              <span className="sm:hidden">{tab.label.split(" · ")[1]}</span>
+              {/* Progress bar only on active */}
+              {isActive && (
+                <div className="absolute bottom-0 left-0 h-0.5 bg-primary/25 w-full">
+                  <div className="h-full bg-primary transition-none" style={{ width: `${progress}%` }} />
+                </div>
+              )}
+            </button>
+          );
+        })}
+      </div>
+
+      {/* Panel */}
+      <div className="p-6 min-h-[420px]">
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={active}
+            initial={{ opacity: 0, x: 12 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -12 }}
+            transition={{ duration: 0.25 }}
+            className="h-full"
+          >
+            <Panel />
+          </motion.div>
+        </AnimatePresence>
+      </div>
+    </motion.div>
+  );
+}
 
 export default function LandingPage() {
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -600,6 +1028,20 @@ export default function LandingPage() {
               </Button>
             </Link>
           </motion.div>
+        </div>
+      </section>
+
+      {/* ── Interactive Demo ── */}
+      <section className="py-24 px-6">
+        <div className="max-w-6xl mx-auto">
+          <div className="text-center mb-12">
+            <motion.p {...scrollAnim()} className="text-xs font-bold text-primary uppercase tracking-widest mb-3">Live demo</motion.p>
+            <motion.h2 {...scrollAnim(0.05)} className="text-3xl md:text-4xl font-extrabold mb-4">See Noteora in action</motion.h2>
+            <motion.p {...scrollAnim(0.1)} className="text-muted-foreground max-w-xl mx-auto">
+              Walk through the three steps every team takes — from raw data to polished report.
+            </motion.p>
+          </div>
+          <InteractiveDemo />
         </div>
       </section>
 
