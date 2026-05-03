@@ -2,7 +2,7 @@ import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
 import {
-  ArrowRight, BarChart3, Database, Lock, Zap, LineChart,
+  ArrowRight, Database, Lock, Zap, LineChart,
   Shield, Users, TrendingUp, CheckCircle2, FileText, BellRing, Star
 } from "lucide-react";
 
@@ -135,9 +135,8 @@ export default function LandingPage() {
       {/* ── Nav ── */}
       <header className="fixed top-0 w-full z-50 border-b border-border/60 bg-background/80 backdrop-blur-md">
         <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <BarChart3 className="h-5 w-5 text-primary" />
-            <span className="text-lg font-bold tracking-tight">Noteora</span>
+          <div className="flex items-center">
+            <img src="/noteora-logo.png" alt="Noteora" className="h-9 w-auto" />
           </div>
           <nav className="hidden md:flex items-center gap-7 text-sm text-muted-foreground">
             <a href="#features" className="hover:text-foreground transition-colors">Features</a>
@@ -205,9 +204,8 @@ export default function LandingPage() {
           <div className="grid grid-cols-5 min-h-[360px]">
             {/* Sidebar */}
             <div className="hidden md:flex flex-col border-r border-border bg-sidebar p-4 gap-2 col-span-1">
-              <div className="flex items-center gap-2 mb-4">
-                <BarChart3 className="h-4 w-4 text-primary" />
-                <span className="text-xs font-bold">Noteora</span>
+              <div className="flex items-center mb-4">
+                <img src="/noteora-logo.png" alt="Noteora" className="h-5 w-auto" />
               </div>
               {["Dashboard", "Projects", "Datasets", "Analytics", "Reports"].map((item, i) => (
                 <div key={item} className={`text-xs px-2 py-1.5 rounded-md flex items-center gap-2 ${i === 0 ? "bg-sidebar-accent text-sidebar-accent-foreground font-medium" : "text-muted-foreground"}`}>
@@ -387,9 +385,8 @@ export default function LandingPage() {
         <div className="max-w-7xl mx-auto">
           <div className="grid md:grid-cols-4 gap-8 mb-10">
             <div>
-              <div className="flex items-center gap-2 mb-3">
-                <BarChart3 className="h-5 w-5 text-primary" />
-                <span className="font-bold">Noteora</span>
+              <div className="flex items-center mb-3">
+                <img src="/noteora-logo.png" alt="Noteora" className="h-8 w-auto" />
               </div>
               <p className="text-sm text-muted-foreground">Data intelligence for the modern enterprise.</p>
               <div className="flex gap-1 mt-4">

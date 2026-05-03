@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { Link, useLocation } from "wouter";
 import { useUser, useClerk } from "@clerk/react";
 import { 
@@ -10,7 +9,7 @@ import {
   Bell, 
   Settings,
   LogOut,
-  Menu
+  Menu,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
@@ -34,11 +33,8 @@ function SidebarNav({ location }: { location: string }) {
 
   return (
     <div className="flex h-full flex-col bg-sidebar border-r border-sidebar-border">
-      <div className="p-4 flex items-center gap-3">
-        <div className="bg-primary text-primary-foreground p-1.5 rounded-md">
-          <BarChart3 className="h-5 w-5" />
-        </div>
-        <span className="text-xl font-bold tracking-tight text-sidebar-foreground">Noteora</span>
+      <div className="p-4 flex items-center">
+        <img src="/noteora-logo.png" alt="Noteora" className="h-9 w-auto" />
       </div>
 
       <div className="flex-1 overflow-y-auto py-4 px-3 space-y-1">
@@ -120,10 +116,7 @@ export function Sidebar() {
             <SidebarNav location={location} />
           </SheetContent>
         </Sheet>
-        <div className="flex items-center gap-2">
-          <BarChart3 className="h-5 w-5 text-primary" />
-          <span className="font-bold text-foreground">Noteora</span>
-        </div>
+        <img src="/noteora-logo.png" alt="Noteora" className="h-8 w-auto" />
       </div>
     </>
   );

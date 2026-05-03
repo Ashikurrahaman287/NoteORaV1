@@ -39,7 +39,7 @@ const clerkAppearance = {
   options: {
     logoPlacement: "inside" as const,
     logoLinkUrl: basePath || "/",
-    logoImageUrl: `${window.location.origin}${basePath}/logo.svg`,
+    logoImageUrl: `${window.location.origin}${basePath}/noteora-logo.png`,
   },
   variables: {
     colorPrimary: "hsl(235 86% 65%)",
