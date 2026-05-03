@@ -4,86 +4,86 @@ import tailwindcss from "@tailwindcss/vite";
 import path from "path";
 import runtimeErrorOverlay from "@replit/vite-plugin-runtime-error-modal";
 
-const rawPort = process.env.PORT;
+export default defineConfig(async ({ command }) => {
+  const isBuild = command === "build";
 
-if (!rawPort) {
-  throw new Error("PORT environment variable is required but was not provided.");
-}
+  const rawPort = process.env.PORT;
+  const basePath = process.env.BASE_PATH ?? "/";
 
-const port = Number(rawPort);
+  // PORT is only needed when running the dev / preview server, not during `vite build`
+  if (!isBuild && !rawPort) {
+    throw new Error("PORT environment variable is required but was not provided.");
+  }
 
-if (Number.isNaN(port) || port <= 0) {
-  throw new Error(`Invalid PORT value: "${rawPort}"`);
-}
+  const port = rawPort ? Number(rawPort) : 3000;
 
-const basePath = process.env.BASE_PATH;
+  if (!isBuild && (Number.isNaN(port) || port <= 0)) {
+    throw new Error(`Invalid PORT value: "${rawPort}"`);
+  }
 
-if (!basePath) {
-  throw new Error("BASE_PATH environment variable is required but was not provided.");
-}
-
-export default defineConfig({
-  base: basePath,
-  plugins: [
-    react(),
-    tailwindcss({ optimize: false }),
-    runtimeErrorOverlay(),
-    ...(process.env.NODE_ENV !== "production" && process.env.REPL_ID !== undefined
-      ? [
-          await import("@replit/vite-plugin-cartographer").then((m) =>
-            m.cartographer({ root: path.resolve(import.meta.dirname, "..") })
-          ),
-          await import("@replit/vite-plugin-dev-banner").then((m) => m.devBanner()),
-        ]
-      : []),
-  ],
-  resolve: {
-    alias: {
-      "@": path.resolve(import.meta.dirname, "src"),
-      "@assets": path.resolve(import.meta.dirname, "..", "..", "attached_assets"),
+  return {
+    base: basePath,
+    plugins: [
+      react(),
+      tailwindcss({ optimize: false }),
+      ...(!isBuild ? [runtimeErrorOverlay()] : []),
+      ...(process.env.NODE_ENV !== "production" && process.env.REPL_ID !== undefined
+        ? [
+            await import("@replit/vite-plugin-cartographer").then((m) =>
+              m.cartographer({ root: path.resolve(import.meta.dirname, "..") })
+            ),
+            await import("@replit/vite-plugin-dev-banner").then((m) => m.devBanner()),
+          ]
+        : []),
+    ],
+    resolve: {
+      alias: {
+        "@": path.resolve(import.meta.dirname, "src"),
+        "@assets": path.resolve(import.meta.dirname, "..", "..", "attached_assets"),
+      },
+      dedupe: ["react", "react-dom", "@clerk/react"],
     },
-    dedupe: ["react", "react-dom", "@clerk/react"],
-  },
-  root: path.resolve(import.meta.dirname),
-  build: {
-    outDir: path.resolve(import.meta.dirname, "dist/public"),
-    emptyOutDir: true,
-    sourcemap: false,
-    minify: "esbuild",
-    target: "es2020",
-    rollupOptions: {
-      output: {
-        manualChunks: {
-          "vendor-react": ["react", "react-dom"],
-          "vendor-clerk": ["@clerk/react", "@clerk/themes"],
-          "vendor-query": ["@tanstack/react-query"],
-          "vendor-charts": ["recharts"],
-          "vendor-motion": ["framer-motion"],
-          "vendor-ui": [
-            "@radix-ui/react-dialog",
-            "@radix-ui/react-select",
-            "@radix-ui/react-switch",
-            "@radix-ui/react-tooltip",
-            "@radix-ui/react-separator",
-            "@radix-ui/react-label",
-            "@radix-ui/react-slot",
-          ],
+    root: path.resolve(import.meta.dirname),
+    build: {
+      outDir: path.resolve(import.meta.dirname, "dist/public"),
+      emptyOutDir: true,
+      sourcemap: false,
+      minify: "esbuild",
+      target: "es2020",
+      rollupOptions: {
+        output: {
+          manualChunks: {
+            "vendor-react": ["react", "react-dom"],
+            "vendor-clerk": ["@clerk/react", "@clerk/themes"],
+            "vendor-query": ["@tanstack/react-query"],
+            "vendor-charts": ["recharts"],
+            "vendor-motion": ["framer-motion"],
+            "vendor-ui": [
+              "@radix-ui/react-dialog",
+              "@radix-ui/react-select",
+              "@radix-ui/react-switch",
+              "@radix-ui/react-tooltip",
+              "@radix-ui/react-separator",
+              "@radix-ui/react-label",
+              "@radix-ui/react-slot",
+            ],
+          },
         },
       },
     },
-  },
-  server: {
-    port,
-    strictPort: true,
-    host: "0.0.0.0",
-    allowedHosts: true,
-    fs: {
-      strict: true,
+    server: {
+      port,
+      strictPort: true,
+      host: "0.0.0.0",
+      allowedHosts: true,
+      fs: {
+        strict: true,
+      },
     },
-  },
-  preview: {
-    port,
-    host: "0.0.0.0",
-    allowedHosts: true,
-  },
+    preview: {
+      port,
+      host: "0.0.0.0",
+      allowedHosts: true,
+    },
+  };
 });

@@ -106,3 +106,40 @@ Uses Replit-managed Clerk. The Clerk proxy runs at `/api/__clerk`. Sign-in/sign-
 - `theme-color` set to `#1e3a8a` (dark navy)
 
 See the `pnpm-workspace` skill for workspace structure, TypeScript setup, and package details.
+
+## Vercel Deployment
+
+The project is fully configured for Vercel deployment via `vercel.json` at the repo root.
+
+### How it works
+
+| Concern | Solution |
+|---|---|
+| Frontend build | `BASE_PATH=/ pnpm run build:vercel` → `artifacts/noteora/dist/public` |
+| API routes | `api/index.ts` serverless function — wraps the Express app, handles all `/api/*` |
+| SPA routing | Vercel rewrite `/:path* → /index.html` |
+| Assets | `Cache-Control: immutable, 1 year` on `/assets/*` |
+| Security headers | HSTS, X-Frame-Options, CSP, Referrer-Policy on all routes |
+
+### Environment variables to set in Vercel dashboard
+
+| Variable | Where | Notes |
+|---|---|---|
+| `DATABASE_URL` | Runtime | Use Neon or Supabase for serverless-compatible Postgres |
+| `CLERK_PUBLISHABLE_KEY` | Runtime | From Clerk dashboard |
+| `CLERK_SECRET_KEY` | Runtime | From Clerk dashboard |
+| `VITE_CLERK_PUBLISHABLE_KEY` | **Build + Runtime** | Must be marked as a Build variable in Vercel |
+| `VITE_CLERK_PROXY_URL` | Build | `https://your-app.vercel.app/api/__clerk` |
+| `ALLOWED_ORIGINS` | Runtime | Your production domain(s), comma-separated |
+| `SESSION_SECRET` | Runtime | 32+ random hex chars |
+
+`BASE_PATH` is automatically injected by the `buildCommand` in `vercel.json` — no need to set it in the dashboard.
+
+### Key files
+
+- `vercel.json` — Build command, output dir, function config, rewrites, security headers
+- `api/index.ts` — Vercel serverless function entry point (imports Express app)
+- `artifacts/noteora/vite.config.ts` — PORT/BASE_PATH only required for dev server, not build
+- `artifacts/noteora/public/robots.txt` — SEO: blocks app routes from crawlers
+- `artifacts/noteora/public/sitemap.xml` — SEO: all public marketing pages
+- `.env.example` — Documents every required environment variable
