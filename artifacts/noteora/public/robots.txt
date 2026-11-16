@@ -1,0 +1,16 @@
+User-agent: *
+Allow: /
+
+# Keep authenticated app routes out of search indexes
+Disallow: /dashboard
+Disallow: /projects
+Disallow: /datasets
+Disallow: /analytics
+Disallow: /reports
+Disallow: /notifications
+Disallow: /settings
+Disallow: /sign-in
+Disallow: /sign-up
+Disallow: /api/
+
+Sitemap: https://noteora.vercel.app/sitemap.xml

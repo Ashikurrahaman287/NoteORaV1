@@ -1,0 +1,31 @@
+kind = "web"
+previewPath = "/"
+title = "Noteora – Smart Data Analytics"
+version = "1.0.0"
+id = "artifacts/noteora"
+router = "path"
+
+[[integratedSkills]]
+name = "react-vite"
+version = "1.0.0"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 23281
+
+[services.development]
+run = "pnpm --filter @workspace/noteora run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/noteora", "run", "build" ]
+publicDir = "artifacts/noteora/dist/public"
+serve = "static"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "23281"
+BASE_PATH = "/"
